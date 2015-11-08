@@ -14,7 +14,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "F07DE10A1BEF7FE60081FB2B"
+               BlueprintIdentifier = "F07DE14A1BEF83C50081FB2B"
                BuildableName = "TTMiD.app"
                BlueprintName = "TTMiD"
                ReferencedContainer = "container:TTMiD.xcodeproj">
@@ -32,7 +32,7 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "F07DE1201BEF7FE60081FB2B"
+               BlueprintIdentifier = "F07DE1631BEF83C50081FB2B"
                BuildableName = "TTMiDTests.xctest"
                BlueprintName = "TTMiDTests"
                ReferencedContainer = "container:TTMiD.xcodeproj">
@@ -42,7 +42,7 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "F07DE12B1BEF7FE60081FB2B"
+               BlueprintIdentifier = "F07DE16E1BEF83C50081FB2B"
                BuildableName = "TTMiDUITests.xctest"
                BlueprintName = "TTMiDUITests"
                ReferencedContainer = "container:TTMiD.xcodeproj">
@@ -52,7 +52,7 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "F07DE10A1BEF7FE60081FB2B"
+            BlueprintIdentifier = "F07DE14A1BEF83C50081FB2B"
             BuildableName = "TTMiD.app"
             BlueprintName = "TTMiD"
             ReferencedContainer = "container:TTMiD.xcodeproj">
@@ -75,7 +75,7 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "F07DE10A1BEF7FE60081FB2B"
+            BlueprintIdentifier = "F07DE14A1BEF83C50081FB2B"
             BuildableName = "TTMiD.app"
             BlueprintName = "TTMiD"
             ReferencedContainer = "container:TTMiD.xcodeproj">
@@ -94,7 +94,7 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "F07DE10A1BEF7FE60081FB2B"
+            BlueprintIdentifier = "F07DE14A1BEF83C50081FB2B"
             BuildableName = "TTMiD.app"
             BlueprintName = "TTMiD"
             ReferencedContainer = "container:TTMiD.xcodeproj">
