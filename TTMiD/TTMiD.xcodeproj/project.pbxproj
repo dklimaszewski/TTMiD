@@ -17,6 +17,7 @@
 		F07DE15E1BEF83C50081FB2B /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F07DE15C1BEF83C50081FB2B /* LaunchScreen.storyboard */; };
 		F07DE1691BEF83C50081FB2B /* TTMiDTests.m in Sources */ = {isa = PBXBuildFile; fileRef = F07DE1681BEF83C50081FB2B /* TTMiDTests.m */; };
 		F07DE1741BEF83C50081FB2B /* TTMiDUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = F07DE1731BEF83C50081FB2B /* TTMiDUITests.m */; };
+		F07DE1831BEF8DE10081FB2B /* u2.wav in Resources */ = {isa = PBXBuildFile; fileRef = F07DE1821BEF8DE10081FB2B /* u2.wav */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -57,6 +58,7 @@
 		F07DE16F1BEF83C50081FB2B /* TTMiDUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TTMiDUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		F07DE1731BEF83C50081FB2B /* TTMiDUITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TTMiDUITests.m; sourceTree = "<group>"; };
 		F07DE1751BEF83C50081FB2B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		F07DE1821BEF8DE10081FB2B /* u2.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = u2.wav; sourceTree = "<group>"; };
 		FDA92A9A6DF36006C182F8E9 /* Pods-TTMiD.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TTMiD.release.xcconfig"; path = "Pods/Target Support Files/Pods-TTMiD/Pods-TTMiD.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -115,6 +117,7 @@
 		1CF52DE41BEF85D1007485A5 /* Audio Files */ = {
 			isa = PBXGroup;
 			children = (
+				F07DE1821BEF8DE10081FB2B /* u2.wav */,
 			);
 			name = "Audio Files";
 			sourceTree = "<group>";
@@ -300,6 +303,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F07DE15E1BEF83C50081FB2B /* LaunchScreen.storyboard in Resources */,
+				F07DE1831BEF8DE10081FB2B /* u2.wav in Resources */,
 				F07DE15B1BEF83C50081FB2B /* Assets.xcassets in Resources */,
 				F07DE1591BEF83C50081FB2B /* Main.storyboard in Resources */,
 			);
