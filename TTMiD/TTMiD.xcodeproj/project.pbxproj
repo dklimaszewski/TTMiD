@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1CF52DE31BEF84F7007485A5 /* TPAACAudioConverter.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CF52DE21BEF84F7007485A5 /* TPAACAudioConverter.m */; };
+		5CD1AE290CCF21EBD743EBB3 /* libPods-TTMiD.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8DD3F75295DE5ECEE73819BE /* libPods-TTMiD.a */; };
 		F07DE1501BEF83C50081FB2B /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = F07DE14F1BEF83C50081FB2B /* main.m */; };
 		F07DE1531BEF83C50081FB2B /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = F07DE1521BEF83C50081FB2B /* AppDelegate.m */; };
 		F07DE1561BEF83C50081FB2B /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F07DE1551BEF83C50081FB2B /* ViewController.m */; };
@@ -35,6 +37,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		1CF52DE11BEF84F7007485A5 /* TPAACAudioConverter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TPAACAudioConverter.h; sourceTree = "<group>"; };
+		1CF52DE21BEF84F7007485A5 /* TPAACAudioConverter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TPAACAudioConverter.m; sourceTree = "<group>"; };
+		8DD3F75295DE5ECEE73819BE /* libPods-TTMiD.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-TTMiD.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		E2ECBE81E315F9EE4749A6B0 /* Pods-TTMiD.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TTMiD.debug.xcconfig"; path = "Pods/Target Support Files/Pods-TTMiD/Pods-TTMiD.debug.xcconfig"; sourceTree = "<group>"; };
 		F07DE14B1BEF83C50081FB2B /* TTMiD.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TTMiD.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F07DE14F1BEF83C50081FB2B /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		F07DE1511BEF83C50081FB2B /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -51,6 +57,7 @@
 		F07DE16F1BEF83C50081FB2B /* TTMiDUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TTMiDUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		F07DE1731BEF83C50081FB2B /* TTMiDUITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TTMiDUITests.m; sourceTree = "<group>"; };
 		F07DE1751BEF83C50081FB2B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		FDA92A9A6DF36006C182F8E9 /* Pods-TTMiD.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TTMiD.release.xcconfig"; path = "Pods/Target Support Files/Pods-TTMiD/Pods-TTMiD.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,6 +65,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5CD1AE290CCF21EBD743EBB3 /* libPods-TTMiD.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -78,6 +86,47 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		150E7BBCC17EB61DDF7EB455 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				E2ECBE81E315F9EE4749A6B0 /* Pods-TTMiD.debug.xcconfig */,
+				FDA92A9A6DF36006C182F8E9 /* Pods-TTMiD.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
+		1CF52DC61BEF848F007485A5 /* Codecs */ = {
+			isa = PBXGroup;
+			children = (
+				1CF52DE01BEF84EF007485A5 /* AAC */,
+			);
+			name = Codecs;
+			sourceTree = "<group>";
+		};
+		1CF52DE01BEF84EF007485A5 /* AAC */ = {
+			isa = PBXGroup;
+			children = (
+				1CF52DE11BEF84F7007485A5 /* TPAACAudioConverter.h */,
+				1CF52DE21BEF84F7007485A5 /* TPAACAudioConverter.m */,
+			);
+			name = AAC;
+			sourceTree = "<group>";
+		};
+		1CF52DE41BEF85D1007485A5 /* Audio Files */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = "Audio Files";
+			sourceTree = "<group>";
+		};
+		7D75209E274ED1E951F9DCCE /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				8DD3F75295DE5ECEE73819BE /* libPods-TTMiD.a */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		F07DE1421BEF83C50081FB2B = {
 			isa = PBXGroup;
 			children = (
@@ -85,6 +134,8 @@
 				F07DE1671BEF83C50081FB2B /* TTMiDTests */,
 				F07DE1721BEF83C50081FB2B /* TTMiDUITests */,
 				F07DE14C1BEF83C50081FB2B /* Products */,
+				150E7BBCC17EB61DDF7EB455 /* Pods */,
+				7D75209E274ED1E951F9DCCE /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -101,6 +152,8 @@
 		F07DE14D1BEF83C50081FB2B /* TTMiD */ = {
 			isa = PBXGroup;
 			children = (
+				1CF52DE41BEF85D1007485A5 /* Audio Files */,
+				1CF52DC61BEF848F007485A5 /* Codecs */,
 				F07DE1511BEF83C50081FB2B /* AppDelegate.h */,
 				F07DE1521BEF83C50081FB2B /* AppDelegate.m */,
 				F07DE1541BEF83C50081FB2B /* ViewController.h */,
@@ -147,9 +200,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = F07DE1781BEF83C50081FB2B /* Build configuration list for PBXNativeTarget "TTMiD" */;
 			buildPhases = (
+				3D435CDD7B4A9153BD664493 /* Check Pods Manifest.lock */,
 				F07DE1471BEF83C50081FB2B /* Sources */,
 				F07DE1481BEF83C50081FB2B /* Frameworks */,
 				F07DE1491BEF83C50081FB2B /* Resources */,
+				0332B0C201D96A78A8303979 /* Embed Pods Frameworks */,
+				FD10CD8AE696CBC407A477B1 /* Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -265,6 +321,54 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		0332B0C201D96A78A8303979 /* Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-TTMiD/Pods-TTMiD-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		3D435CDD7B4A9153BD664493 /* Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		FD10CD8AE696CBC407A477B1 /* Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-TTMiD/Pods-TTMiD-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		F07DE1471BEF83C50081FB2B /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -273,6 +377,7 @@
 				F07DE1561BEF83C50081FB2B /* ViewController.m in Sources */,
 				F07DE1531BEF83C50081FB2B /* AppDelegate.m in Sources */,
 				F07DE1501BEF83C50081FB2B /* main.m in Sources */,
+				1CF52DE31BEF84F7007485A5 /* TPAACAudioConverter.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -409,6 +514,7 @@
 		};
 		F07DE1791BEF83C50081FB2B /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = E2ECBE81E315F9EE4749A6B0 /* Pods-TTMiD.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = TTMiD/Info.plist;
@@ -420,6 +526,7 @@
 		};
 		F07DE17A1BEF83C50081FB2B /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = FDA92A9A6DF36006C182F8E9 /* Pods-TTMiD.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = TTMiD/Info.plist;
@@ -496,6 +603,7 @@
 				F07DE17A1BEF83C50081FB2B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		F07DE17B1BEF83C50081FB2B /* Build configuration list for PBXNativeTarget "TTMiDTests" */ = {
 			isa = XCConfigurationList;
@@ -504,6 +612,7 @@
 				F07DE17D1BEF83C50081FB2B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		F07DE17E1BEF83C50081FB2B /* Build configuration list for PBXNativeTarget "TTMiDUITests" */ = {
 			isa = XCConfigurationList;
@@ -512,6 +621,7 @@
 				F07DE1801BEF83C50081FB2B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

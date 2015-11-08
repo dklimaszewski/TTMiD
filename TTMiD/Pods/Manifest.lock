@@ -1,0 +1,15 @@
+PODS:
+  - CSIOpusCodec (0.0.5):
+    - libopus (~> 1.1)
+  - libopus (1.1):
+    - libopus/float (= 1.1)
+  - libopus/float (1.1)
+
+DEPENDENCIES:
+  - CSIOpusCodec
+
+SPEC CHECKSUMS:
+  CSIOpusCodec: 8b835f70ff8a7cc0a1faa51c556615264c02a0f6
+  libopus: ad5f060dcb8f30f139777244d70f9111f1c80863
+
+COCOAPODS: 0.39.0
