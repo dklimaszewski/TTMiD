@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1CC350F91C01EC1B0059D7DF /* M1F1-Alaw-AFsp.wav in Resources */ = {isa = PBXBuildFile; fileRef = 1CC350F81C01EC1B0059D7DF /* M1F1-Alaw-AFsp.wav */; };
 		1CF52DE31BEF84F7007485A5 /* TPAACAudioConverter.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CF52DE21BEF84F7007485A5 /* TPAACAudioConverter.m */; };
 		5CD1AE290CCF21EBD743EBB3 /* libPods-TTMiD.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8DD3F75295DE5ECEE73819BE /* libPods-TTMiD.a */; };
 		F07DE1501BEF83C50081FB2B /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = F07DE14F1BEF83C50081FB2B /* main.m */; };
@@ -37,6 +38,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		1CC350F81C01EC1B0059D7DF /* M1F1-Alaw-AFsp.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "M1F1-Alaw-AFsp.wav"; sourceTree = "<group>"; };
 		1CF52DE11BEF84F7007485A5 /* TPAACAudioConverter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TPAACAudioConverter.h; sourceTree = "<group>"; };
 		1CF52DE21BEF84F7007485A5 /* TPAACAudioConverter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TPAACAudioConverter.m; sourceTree = "<group>"; };
 		8DD3F75295DE5ECEE73819BE /* libPods-TTMiD.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-TTMiD.a"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -115,6 +117,7 @@
 		1CF52DE41BEF85D1007485A5 /* Audio Files */ = {
 			isa = PBXGroup;
 			children = (
+				1CC350F81C01EC1B0059D7DF /* M1F1-Alaw-AFsp.wav */,
 			);
 			name = "Audio Files";
 			sourceTree = "<group>";
@@ -299,6 +302,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1CC350F91C01EC1B0059D7DF /* M1F1-Alaw-AFsp.wav in Resources */,
 				F07DE15E1BEF83C50081FB2B /* LaunchScreen.storyboard in Resources */,
 				F07DE15B1BEF83C50081FB2B /* Assets.xcassets in Resources */,
 				F07DE1591BEF83C50081FB2B /* Main.storyboard in Resources */,
