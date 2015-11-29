@@ -5,13 +5,16 @@ PODS:
   - EZAudio/Full (1.1.2):
     - EZAudio/Core
     - TPCircularBuffer (~> 0.0)
+  - FDWaveformView (0.3.1)
   - TPCircularBuffer (0.0.1)
 
 DEPENDENCIES:
   - EZAudio
+  - FDWaveformView
 
 SPEC CHECKSUMS:
   EZAudio: 01373de2b1257b77be1bf13753fb1c4ea8a9777e
+  FDWaveformView: 9d641a95bc0abd8af27cac4c973b015735d916f0
   TPCircularBuffer: 949e9632b9fb99b7274d7b2296ee22bff5841e35
 
 COCOAPODS: 0.39.0

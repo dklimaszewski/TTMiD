@@ -6,6 +6,7 @@
 target 'Converter iOS' do
 
 pod 'EZAudio'
+pod 'FDWaveformView'
 
 end
 

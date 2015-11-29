@@ -302,7 +302,7 @@ static void WritePacketTableInfo(AudioConverterRef converter, AudioFileID destin
 
 #pragma mark-
 
-OSStatus DoConvertFile(CFURLRef sourceURL, CFURLRef destinationURL, OSType outputFormat, Float64 outputSampleRate) 
+OSStatus DoConvertFile(CFURLRef sourceURL, CFURLRef destinationURL, OSType outputFormat, Float64 outputSampleRate, UInt32 outputBitRate)
 {
 	AudioFileID         sourceFileID = 0;
     AudioFileID         destinationFileID = 0;
@@ -380,15 +380,14 @@ OSStatus DoConvertFile(CFURLRef sourceURL, CFURLRef destinationURL, OSType outpu
         // if you do not explicitly set a bit rate the encoder will pick the correct value for you depending on samplerate and number of channels
         // bit rate also scales with the number of channels, therefore one bit rate per sample rate can be used for mono cases
         //    and if you have stereo or more, you can multiply that number by the number of channels.
+        
+        if (outputBitRate == 0) {
+            outputBitRate = 192000; // 192kbs
+        }
+        
         if (dstFormat.mFormatID == kAudioFormatMPEG4AAC) {
-            UInt32 outputBitRate = 64000; // 64kbs
-            UInt32 propSize = sizeof(outputBitRate);
             
-            if (dstFormat.mSampleRate >= 44100) {
-                outputBitRate = 192000; // 192kbs
-            } else if (dstFormat.mSampleRate < 22000) {
-                outputBitRate = 32000; // 32kbs
-            }
+            UInt32 propSize = sizeof(outputBitRate);
             
             // set the bit rate depending on the samplerate chosen
             XThrowIfError(AudioConverterSetProperty(converter, kAudioConverterEncodeBitRate, propSize, &outputBitRate),
@@ -396,7 +395,7 @@ OSStatus DoConvertFile(CFURLRef sourceURL, CFURLRef destinationURL, OSType outpu
             
             // get it back and print it out
             AudioConverterGetProperty(converter, kAudioConverterEncodeBitRate, &propSize, &outputBitRate);
-            printf ("AAC Encode Bitrate: %ld\n", outputBitRate);
+            printf ("AAC Encode Bitrate: %u\n", (unsigned int)outputBitRate);
         }
 
         // can the Audio Converter resume conversion after an interruption?

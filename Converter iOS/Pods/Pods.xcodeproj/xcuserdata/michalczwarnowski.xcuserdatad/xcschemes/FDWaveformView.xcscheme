@@ -14,10 +14,10 @@
             buildForArchiving = "YES">
             <BuildableReference
                BuildableIdentifier = 'primary'
-               BlueprintIdentifier = 'AC36B6C70FE66533C48158C6'
-               BlueprintName = 'TPCircularBuffer'
+               BlueprintIdentifier = '7A0372A010556FA247D448EC'
+               BlueprintName = 'FDWaveformView'
                ReferencedContainer = 'container:Pods.xcodeproj'
-               BuildableName = 'libTPCircularBuffer.a'>
+               BuildableName = 'libFDWaveformView.a'>
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>

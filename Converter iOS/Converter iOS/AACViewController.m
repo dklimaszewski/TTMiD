@@ -8,8 +8,9 @@
 
 #import "AACViewController.h"
 #import <EZAudio.h>
+#import <FDWaveformView.h>
 
-extern OSStatus DoConvertFile(CFURLRef sourceURL, CFURLRef destinationURL, OSType outputFormat, Float64 outputSampleRate);
+extern OSStatus DoConvertFile(CFURLRef sourceURL, CFURLRef destinationURL, OSType outputFormat, Float64 outputSampleRate, UInt32 outputBitRate);
 
 #define kTransitionDuration	0.75
 
@@ -89,13 +90,8 @@ static void UpdateFormatInfo(CFURLRef inFileURL)
     Float64  sampleRate;
 }
 
-@property (weak, nonatomic) IBOutlet EZAudioPlot *aacAudioPlot;
-@property (weak, nonatomic) IBOutlet EZAudioPlot *wavAudioPlot;
-
-@property (strong, nonatomic) EZAudioFile *aacAudioFile;
-@property (strong, nonatomic) EZAudioFile *wavAudioFile;
-
-@property (assign, nonatomic) BOOL eof;
+@property (weak, nonatomic) IBOutlet FDWaveformView *inputAudioView;
+@property (weak, nonatomic) IBOutlet FDWaveformView *wavAudioView;
 
 @end
 
@@ -103,8 +99,8 @@ static void UpdateFormatInfo(CFURLRef inFileURL)
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-
-    [self setupAudioPlots];
+    
+    [self showInputWAVWaveform];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -190,7 +186,7 @@ static void UpdateFormatInfo(CFURLRef inFileURL)
 - (void)convertAudio
 {
     @autoreleasepool {
-        OSStatus error = DoConvertFile(sourceURL, destinationURL, outputFormat, sampleRate);
+        OSStatus error = DoConvertFile(sourceURL, destinationURL, outputFormat, sampleRate, 64000);
         
         if (error) {
             // delete output file if it exists since an error was returned during the conversion process
@@ -208,8 +204,6 @@ static void UpdateFormatInfo(CFURLRef inFileURL)
             if (outputFormat == kAudioFormatMPEG4AAC) {
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [[[UIAlertView alloc] initWithTitle:@"Success!" message:@"Audio Converted" delegate:nil cancelButtonTitle:@"YAY!!!" otherButtonTitles:nil] show];
-                    
-                    [self performSelector:@selector(showAACAudioPlot) withObject:nil afterDelay:1.0];
                 });
                 
             } else if (outputFormat == kAudioFormatLinearPCM) {
@@ -217,7 +211,7 @@ static void UpdateFormatInfo(CFURLRef inFileURL)
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [[[UIAlertView alloc] initWithTitle:@"Success!" message:@"Audio Converted" delegate:nil cancelButtonTitle:@"YAY!!!" otherButtonTitles:nil] show];
                     
-                    [self performSelector:@selector(showWAVAudioPlot) withObject:nil afterDelay:1.0];
+                    [self performSelector:@selector(showWAVWaveform) withObject:nil afterDelay:1.0];
                 });
                 
             }
@@ -228,76 +222,25 @@ static void UpdateFormatInfo(CFURLRef inFileURL)
     
 }
 
-#pragma mark- EZAudio Plots
+#pragma mark- FDWaveformView Plots
 
-- (void)setupAudioPlots {
-    // Background color
-    self.aacAudioPlot.backgroundColor = [UIColor whiteColor];
-    self.wavAudioPlot.backgroundColor = [UIColor whiteColor];
+- (void)showInputWAVWaveform {
     
-    // Waveform color
-    self.aacAudioPlot.color = [UIColor redColor];
-    self.wavAudioPlot.color = [UIColor blueColor];
+    NSString *sourceFilePath = [[NSBundle mainBundle] pathForResource:@"wavTestFile" ofType:@"wav"];
     
-    // Plot type
-    self.aacAudioPlot.plotType = EZPlotTypeBuffer;
-    self.wavAudioPlot.plotType = EZPlotTypeBuffer;
+    self.inputAudioView.wavesColor = [UIColor redColor];
+    self.inputAudioView.audioURL = [NSURL fileURLWithPath:sourceFilePath];
     
-    // Fill
-    self.aacAudioPlot.shouldFill = YES;
-    self.wavAudioPlot.shouldFill = YES;
-    
-    // Mirror
-    self.aacAudioPlot.shouldMirror = YES;
-    self.wavAudioPlot.shouldMirror = YES;
-    
-    // No need to optimze for realtime
-    self.aacAudioPlot.shouldOptimizeForRealtimePlot = NO;
-    self.wavAudioPlot.shouldOptimizeForRealtimePlot = NO;
 }
 
-- (void)showAACAudioPlot {
-    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-    NSString *documentsDirectory = [paths objectAtIndex:0];
-    NSString *sourceFilePath = [[NSString alloc] initWithFormat: @"%@/output.aac", documentsDirectory];
+- (void)showWAVWaveform {
     
-    self.aacAudioFile = [EZAudioFile audioFileWithURL:[NSURL fileURLWithPath:sourceFilePath]];
-    self.eof = NO;
-    
-    // Plot the whole waveform
-    self.aacAudioPlot.plotType     = EZPlotTypeBuffer;
-    self.aacAudioPlot.shouldFill   = YES;
-    self.aacAudioPlot.shouldMirror = YES;
-    
-    __weak typeof (self) weakSelf = self;
-    [self.aacAudioFile getWaveformDataWithCompletionBlock:^(float **waveformData,
-                                                         int length)
-     {
-         [weakSelf.aacAudioPlot updateBuffer:waveformData[0]
-                              withBufferSize:length];
-     }];
-}
-
-- (void)showWAVAudioPlot {
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
     NSString *documentsDirectory = [paths objectAtIndex:0];
     NSString *sourceFilePath = [[NSString alloc] initWithFormat: @"%@/output.wav", documentsDirectory];
     
-    self.wavAudioFile = [EZAudioFile audioFileWithURL:[NSURL fileURLWithPath:sourceFilePath]];
-    self.eof = NO;
+    self.wavAudioView.wavesColor = [UIColor blueColor];
+    self.wavAudioView.audioURL = [NSURL fileURLWithPath:sourceFilePath];
     
-    // Plot the whole waveform
-    self.wavAudioPlot.plotType     = EZPlotTypeBuffer;
-    self.wavAudioPlot.shouldFill   = YES;
-    self.wavAudioPlot.shouldMirror = YES;
-    
-    __weak typeof (self) weakSelf = self;
-    [self.wavAudioFile getWaveformDataWithCompletionBlock:^(float **waveformData,
-                                                            int length)
-     {
-         [weakSelf.wavAudioPlot updateBuffer:waveformData[0]
-                              withBufferSize:length];
-     }];
 }
-
 @end
