@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1C7543911C09C5AA0075BDAE /* AudioConverterFileConvert.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1C7543901C09C5A90075BDAE /* AudioConverterFileConvert.cpp */; };
+		1C75439B1C09C6320075BDAE /* CADebugPrintf.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1C7543991C09C6320075BDAE /* CADebugPrintf.cpp */; };
 		1CA93C181C04F436006E424A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CA93C171C04F436006E424A /* main.m */; };
 		1CA93C1F1C04F441006E424A /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1CA93C1E1C04F441006E424A /* AudioToolbox.framework */; };
 /* End PBXBuildFile section */
@@ -24,6 +26,16 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		1C7543901C09C5A90075BDAE /* AudioConverterFileConvert.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AudioConverterFileConvert.cpp; sourceTree = "<group>"; };
+		1C7543931C09C5C00075BDAE /* CADebugMacros.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CADebugMacros.h; sourceTree = "<group>"; };
+		1C7543941C09C5C00075BDAE /* CAMath.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CAMath.h; sourceTree = "<group>"; };
+		1C7543951C09C5C00075BDAE /* CAStreamBasicDescription.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = CAStreamBasicDescription.cpp; sourceTree = "<group>"; };
+		1C7543961C09C5C00075BDAE /* CAStreamBasicDescription.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CAStreamBasicDescription.h; sourceTree = "<group>"; };
+		1C7543971C09C5C00075BDAE /* CAXException.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = CAXException.cpp; sourceTree = "<group>"; };
+		1C7543981C09C5C00075BDAE /* CAXException.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CAXException.h; sourceTree = "<group>"; };
+		1C7543991C09C6320075BDAE /* CADebugPrintf.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CADebugPrintf.cpp; sourceTree = "<group>"; };
+		1C75439A1C09C6320075BDAE /* CADebugPrintf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CADebugPrintf.h; sourceTree = "<group>"; };
+		1C75439D1C09C67F0075BDAE /* Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Prefix.pch; sourceTree = "<group>"; };
 		1CA93C141C04F436006E424A /* Extended Audio Converter */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "Extended Audio Converter"; sourceTree = BUILT_PRODUCTS_DIR; };
 		1CA93C171C04F436006E424A /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		1CA93C1E1C04F441006E424A /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
@@ -41,9 +53,25 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		1C7543921C09C5C00075BDAE /* PublicUtility */ = {
+			isa = PBXGroup;
+			children = (
+				1C7543931C09C5C00075BDAE /* CADebugMacros.h */,
+				1C7543991C09C6320075BDAE /* CADebugPrintf.cpp */,
+				1C75439A1C09C6320075BDAE /* CADebugPrintf.h */,
+				1C7543941C09C5C00075BDAE /* CAMath.h */,
+				1C7543951C09C5C00075BDAE /* CAStreamBasicDescription.cpp */,
+				1C7543961C09C5C00075BDAE /* CAStreamBasicDescription.h */,
+				1C7543971C09C5C00075BDAE /* CAXException.cpp */,
+				1C7543981C09C5C00075BDAE /* CAXException.h */,
+			);
+			path = PublicUtility;
+			sourceTree = "<group>";
+		};
 		1CA93C0B1C04F436006E424A = {
 			isa = PBXGroup;
 			children = (
+				1C75439D1C09C67F0075BDAE /* Prefix.pch */,
 				1CA93C1E1C04F441006E424A /* AudioToolbox.framework */,
 				1CA93C161C04F436006E424A /* Extended Audio Converter */,
 				1CA93C151C04F436006E424A /* Products */,
@@ -62,6 +90,8 @@
 			isa = PBXGroup;
 			children = (
 				1CA93C171C04F436006E424A /* main.m */,
+				1C7543901C09C5A90075BDAE /* AudioConverterFileConvert.cpp */,
+				1C7543921C09C5C00075BDAE /* PublicUtility */,
 			);
 			path = "Extended Audio Converter";
 			sourceTree = "<group>";
@@ -122,7 +152,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1C75439B1C09C6320075BDAE /* CADebugPrintf.cpp in Sources */,
 				1CA93C181C04F436006E424A /* main.m in Sources */,
+				1C7543911C09C5AA0075BDAE /* AudioConverterFileConvert.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -211,6 +243,7 @@
 		1CA93C1C1C04F436006E424A /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				GCC_PREFIX_HEADER = Prefix.pch;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -218,6 +251,7 @@
 		1CA93C1D1C04F436006E424A /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				GCC_PREFIX_HEADER = Prefix.pch;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
@@ -241,6 +275,7 @@
 				1CA93C1D1C04F436006E424A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

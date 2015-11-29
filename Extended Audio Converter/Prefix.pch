@@ -1,0 +1,17 @@
+//
+//  Prefix.h
+//  Extended Audio Converter
+//
+//  Created by Michał Czwarnowski on 28.11.2015.
+//  Copyright © 2015 Michał Czwarnowski. All rights reserved.
+//
+
+#ifndef Prefix_h
+#define Prefix_h
+
+
+#endif /* Prefix_h */
+
+#ifdef __OBJC__
+#import <Foundation/Foundation.h>
+#endif

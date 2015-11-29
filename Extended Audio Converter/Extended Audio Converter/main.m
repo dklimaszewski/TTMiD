@@ -12,7 +12,7 @@
 
 #define kInputFileLocation CFSTR("/Users/michalczwarnowski/Desktop/phone-zen_spirit.mp3")
 #define kWAVFileLocation CFSTR("/Users/michalczwarnowski/Desktop/output.wav")
-#define kMP3FileLocation CFSTR("/Users/michalczwarnowski/Desktop/outputmp3.mp3")
+#define kMP3FileLocation CFSTR("/Users/michalczwarnowski/Desktop/outputAAC.aac")
 
 typedef struct MyAudioConverterSettings {
     AudioStreamBasicDescription outputFormat;
@@ -147,20 +147,20 @@ void ConvertToMP3() {
     
     //        Set up output file
     audioConverterSettings.outputFormat.mSampleRate = 44100.0;
-    audioConverterSettings.outputFormat.mFormatID = kAudioFormatMPEGLayer3;
-    audioConverterSettings.outputFormat.mFormatFlags = kAudioFormatFlagIsBigEndian | kAudioFormatFlagIsSignedInteger | kAudioFormatFlagIsPacked;
-    audioConverterSettings.outputFormat.mBytesPerPacket = 4;
-    audioConverterSettings.outputFormat.mFramesPerPacket = 1;
-    audioConverterSettings.outputFormat.mBytesPerFrame = 4;
+    audioConverterSettings.outputFormat.mFormatID = kAudioFormatMPEG4AAC;
+    audioConverterSettings.outputFormat.mFormatFlags = 0;
+    audioConverterSettings.outputFormat.mBytesPerPacket = 0;
+    audioConverterSettings.outputFormat.mFramesPerPacket = 0;
+    audioConverterSettings.outputFormat.mBytesPerFrame = 0;
     audioConverterSettings.outputFormat.mChannelsPerFrame = 2;
-    audioConverterSettings.outputFormat.mBitsPerChannel = 16;
+    audioConverterSettings.outputFormat.mBitsPerChannel = 0;
     
     CFURLRef outputFileURL = CFURLCreateWithFileSystemPath(kCFAllocatorDefault,
                                                            kMP3FileLocation,
                                                            kCFURLPOSIXPathStyle,
                                                            false);
     CheckError(AudioFileCreateWithURL(outputFileURL,
-                                      kAudioFileMP3Type,
+                                      kAudioFileM4AType,
                                       &audioConverterSettings.outputFormat,
                                       kAudioFileFlags_EraseFile,
                                       &audioConverterSettings.outputFile),
@@ -185,7 +185,7 @@ cleanup:
 int main(int argc, const char * argv[]) {
     @autoreleasepool {
 //        ConvertToWAV();
-        ConvertToMP3();
+//        ConvertToMP3();
     }
     return 0;
 }

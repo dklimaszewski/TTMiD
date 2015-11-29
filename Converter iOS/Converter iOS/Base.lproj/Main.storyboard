@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9060" systemVersion="15B42" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="BYZ-38-t0r">
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9051"/>
+        <capability name="Constraints with non-1.0 multipliers" minToolsVersion="5.1"/>
+    </dependencies>
+    <scenes>
+        <!--View Controller-->
+        <scene sceneID="tne-QT-ifu">
+            <objects>
+                <viewController id="BYZ-38-t0r" customClass="ViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="y3c-jy-aDJ"/>
+                        <viewControllerLayoutGuide type="bottom" id="wfy-db-euE"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="1000" verticalHuggingPriority="1000" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" text="AAC Conversion" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zIs-VR-rrv">
+                                <rect key="frame" x="20" y="28" width="124" height="21"/>
+                                <animations/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="PLg-sL-au7">
+                                <rect key="frame" x="152" y="24" width="428" height="30"/>
+                                <animations/>
+                                <state key="normal" title="Open Converter"/>
+                                <connections>
+                                    <segue destination="8LV-zh-f0y" kind="show" id="9OG-mi-w6A"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <animations/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="PLg-sL-au7" firstAttribute="centerY" secondItem="zIs-VR-rrv" secondAttribute="centerY" id="9gj-WI-C3M"/>
+                            <constraint firstItem="PLg-sL-au7" firstAttribute="height" secondItem="zIs-VR-rrv" secondAttribute="height" id="UOv-eq-CS6"/>
+                            <constraint firstAttribute="trailing" secondItem="PLg-sL-au7" secondAttribute="trailing" constant="20" id="VHq-8u-7FT"/>
+                            <constraint firstItem="PLg-sL-au7" firstAttribute="leading" secondItem="zIs-VR-rrv" secondAttribute="trailing" constant="8" id="XUU-l4-hll"/>
+                            <constraint firstItem="zIs-VR-rrv" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" constant="20" id="fOO-I6-seE"/>
+                            <constraint firstItem="zIs-VR-rrv" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="8" id="x1U-Y2-EAX"/>
+                        </constraints>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="403" y="350"/>
+        </scene>
+        <!--View Controller-->
+        <scene sceneID="5w0-Sm-evt">
+            <objects>
+                <viewController id="8LV-zh-f0y" customClass="AACViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="h1f-Wa-9FQ"/>
+                        <viewControllerLayoutGuide type="bottom" id="UWA-Ba-ujd"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="Y6n-Mp-XNb">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="pgz-4q-96q">
+                                <rect key="frame" x="0.0" y="20" width="300" height="30"/>
+                                <animations/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="30" id="1Dw-vu-a4B"/>
+                                </constraints>
+                                <state key="normal" title="WAV-&gt;AAC"/>
+                                <connections>
+                                    <action selector="convertWAVtoAAC:" destination="8LV-zh-f0y" eventType="touchUpInside" id="Gpr-zq-QpJ"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="9uP-au-Fa1">
+                                <rect key="frame" x="300" y="20" width="300" height="30"/>
+                                <animations/>
+                                <state key="normal" title="AAC-&gt;WAV"/>
+                                <connections>
+                                    <action selector="convertAACtoWAV:" destination="8LV-zh-f0y" eventType="touchUpInside" id="ITb-3k-Vpr"/>
+                                </connections>
+                            </button>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="xhr-mN-EbT">
+                                <rect key="frame" x="0.0" y="50" width="600" height="550"/>
+                                <subviews>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="mcd-4i-vUr" customClass="EZAudioPlot">
+                                        <rect key="frame" x="0.0" y="0.0" width="600" height="275"/>
+                                        <animations/>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                    </view>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="tHJ-ul-4gA" customClass="EZAudioPlot">
+                                        <rect key="frame" x="0.0" y="275" width="600" height="275"/>
+                                        <animations/>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                    </view>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="AAC file" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ose-Cz-7Pb">
+                                        <rect key="frame" x="8" y="8" width="61" height="21"/>
+                                        <animations/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="WAV file" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vP2-lJ-bPg">
+                                        <rect key="frame" x="8" y="283" width="64" height="21"/>
+                                        <animations/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
+                                <animations/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstAttribute="bottom" secondItem="tHJ-ul-4gA" secondAttribute="bottom" id="125-x6-vtq"/>
+                                    <constraint firstAttribute="trailing" secondItem="mcd-4i-vUr" secondAttribute="trailing" id="2h3-hl-qd1"/>
+                                    <constraint firstItem="ose-Cz-7Pb" firstAttribute="top" secondItem="mcd-4i-vUr" secondAttribute="top" constant="8" id="38g-k9-uHK"/>
+                                    <constraint firstItem="ose-Cz-7Pb" firstAttribute="leading" secondItem="mcd-4i-vUr" secondAttribute="leading" constant="8" id="9UW-N7-fla"/>
+                                    <constraint firstItem="tHJ-ul-4gA" firstAttribute="leading" secondItem="xhr-mN-EbT" secondAttribute="leading" id="Gv7-Aj-qRX"/>
+                                    <constraint firstAttribute="trailing" secondItem="tHJ-ul-4gA" secondAttribute="trailing" id="MEs-Up-wSn"/>
+                                    <constraint firstItem="tHJ-ul-4gA" firstAttribute="top" secondItem="mcd-4i-vUr" secondAttribute="bottom" id="Tbx-8t-RIP"/>
+                                    <constraint firstItem="vP2-lJ-bPg" firstAttribute="top" secondItem="tHJ-ul-4gA" secondAttribute="top" constant="8" id="Ybo-eg-Kng"/>
+                                    <constraint firstItem="mcd-4i-vUr" firstAttribute="height" secondItem="xhr-mN-EbT" secondAttribute="height" multiplier="1/2" id="bVo-bj-VHp"/>
+                                    <constraint firstItem="vP2-lJ-bPg" firstAttribute="leading" secondItem="tHJ-ul-4gA" secondAttribute="leading" constant="8" id="gfr-IK-sRR"/>
+                                    <constraint firstItem="mcd-4i-vUr" firstAttribute="top" secondItem="xhr-mN-EbT" secondAttribute="top" id="j4p-yk-U9V"/>
+                                    <constraint firstItem="mcd-4i-vUr" firstAttribute="leading" secondItem="xhr-mN-EbT" secondAttribute="leading" id="wdc-lm-4Tl"/>
+                                </constraints>
+                            </view>
+                        </subviews>
+                        <animations/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="9uP-au-Fa1" firstAttribute="centerY" secondItem="pgz-4q-96q" secondAttribute="centerY" id="5Y5-rZ-kLI"/>
+                            <constraint firstItem="9uP-au-Fa1" firstAttribute="leading" secondItem="pgz-4q-96q" secondAttribute="trailing" id="9cH-vQ-PgY"/>
+                            <constraint firstItem="xhr-mN-EbT" firstAttribute="leading" secondItem="Y6n-Mp-XNb" secondAttribute="leading" id="Aa8-zW-GZG"/>
+                            <constraint firstItem="pgz-4q-96q" firstAttribute="leading" secondItem="Y6n-Mp-XNb" secondAttribute="leading" id="GNg-gA-sdo"/>
+                            <constraint firstAttribute="trailing" secondItem="xhr-mN-EbT" secondAttribute="trailing" id="Ghj-ox-53Y"/>
+                            <constraint firstItem="pgz-4q-96q" firstAttribute="width" secondItem="Y6n-Mp-XNb" secondAttribute="width" multiplier="1/2" id="VlD-KY-ye5"/>
+                            <constraint firstItem="9uP-au-Fa1" firstAttribute="height" secondItem="pgz-4q-96q" secondAttribute="height" id="hFl-fd-bhn"/>
+                            <constraint firstAttribute="trailing" secondItem="9uP-au-Fa1" secondAttribute="trailing" id="lJj-2y-KXY"/>
+                            <constraint firstItem="pgz-4q-96q" firstAttribute="top" secondItem="h1f-Wa-9FQ" secondAttribute="bottom" id="viq-tM-a8L"/>
+                            <constraint firstItem="UWA-Ba-ujd" firstAttribute="top" secondItem="xhr-mN-EbT" secondAttribute="bottom" id="xbN-Y0-Yfu"/>
+                            <constraint firstItem="xhr-mN-EbT" firstAttribute="top" secondItem="pgz-4q-96q" secondAttribute="bottom" id="zP5-2C-ZqM"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="aacAudioPlot" destination="mcd-4i-vUr" id="3gH-QJ-Ze5"/>
+                        <outlet property="wavAudioPlot" destination="tHJ-ul-4gA" id="t5K-YY-IKi"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="MhB-L3-2bO" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1045" y="350"/>
+        </scene>
+    </scenes>
+</document>
