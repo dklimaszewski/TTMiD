@@ -93,6 +93,9 @@ static void UpdateFormatInfo(CFURLRef inFileURL)
 @property (weak, nonatomic) IBOutlet FDWaveformView *inputAudioView;
 @property (weak, nonatomic) IBOutlet FDWaveformView *wavAudioView;
 
+@property (strong, nonatomic) EZAudioFile *inputAudioFile;
+@property (strong, nonatomic) EZAudioFile *outputAudioFile;
+
 @end
 
 @implementation AACViewController
@@ -100,6 +103,7 @@ static void UpdateFormatInfo(CFURLRef inFileURL)
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+//    [self compareAudioFiles];
     [self showInputWAVWaveform];
 }
 
@@ -109,14 +113,14 @@ static void UpdateFormatInfo(CFURLRef inFileURL)
 }
 
 - (IBAction)convertWAVtoAAC:(id)sender {
-    outputFormat = kAudioFormatMPEG4AAC;
+    outputFormat = kAudioFormatMPEG4AAC;//kAudioFormatMPEG4AAC_HE_V2
     
-    NSString *source = [[NSBundle mainBundle] pathForResource:@"wavTestFile" ofType:@"wav"];
+    NSString *source = [[NSBundle mainBundle] pathForResource:@"a2002011001-e02" ofType:@"wav"];
     sourceURL = CFURLCreateWithFileSystemPath(kCFAllocatorDefault, (CFStringRef)source, kCFURLPOSIXPathStyle, false);
     
     NSArray  *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
     NSString *documentsDirectory = [paths objectAtIndex:0];
-    destinationFilePath = [[NSString alloc] initWithFormat: @"%@/output.aac", documentsDirectory];
+    destinationFilePath = [[NSString alloc] initWithFormat: @"%@/output.m4a", documentsDirectory];
     
     if ([[NSFileManager defaultManager] fileExistsAtPath:destinationFilePath]) {
         [[NSFileManager defaultManager] removeItemAtPath:destinationFilePath error:nil];
@@ -143,7 +147,7 @@ static void UpdateFormatInfo(CFURLRef inFileURL)
     
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
     NSString *documentsDirectory = [paths objectAtIndex:0];
-    NSString *sourceFilePath = [[NSString alloc] initWithFormat: @"%@/output.aac", documentsDirectory];
+    NSString *sourceFilePath = [[NSString alloc] initWithFormat: @"%@/output.m4a", documentsDirectory];
     CFURLCreateWithFileSystemPath(kCFAllocatorDefault, (CFStringRef)sourceFilePath, kCFURLPOSIXPathStyle, false);
     
     destinationFilePath = [[NSString alloc] initWithFormat: @"%@/output.wav", documentsDirectory];
@@ -212,6 +216,8 @@ static void UpdateFormatInfo(CFURLRef inFileURL)
                     [[[UIAlertView alloc] initWithTitle:@"Success!" message:@"Audio Converted" delegate:nil cancelButtonTitle:@"YAY!!!" otherButtonTitles:nil] show];
                     
                     [self performSelector:@selector(showWAVWaveform) withObject:nil afterDelay:1.0];
+                    
+                    [self performSelector:@selector(compareAudioFiles) withObject:nil afterDelay:1.0];
                 });
                 
             }
@@ -222,11 +228,54 @@ static void UpdateFormatInfo(CFURLRef inFileURL)
     
 }
 
+- (void)compareAudioFiles {
+    
+    __block NSMutableArray *inputFileAmplitudes;
+    __block NSMutableArray *outputFileAmplitudes;
+    __block NSMutableArray *amplitudesDifference;
+    
+    NSString *sourceFilePath = [[NSBundle mainBundle] pathForResource:@"a2002011001-e02" ofType:@"wav"];
+    self.inputAudioFile = [EZAudioFile audioFileWithURL:[NSURL fileURLWithPath:sourceFilePath]];
+    
+    [self.inputAudioFile getWaveformDataWithCompletionBlock:^(float **waveformData, int length) {
+        inputFileAmplitudes = [[NSMutableArray alloc] initWithCapacity:length];
+        
+        for (int i=0; i<length; i++) {
+            [inputFileAmplitudes addObject:@(waveformData[0][i])];
+        }
+        
+        NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+        NSString *documentsDirectory = [paths objectAtIndex:0];
+        NSString *outputFilePath = [[NSString alloc] initWithFormat: @"%@/output.wav", documentsDirectory];
+//        NSString *outputFilePath = [[NSBundle mainBundle] pathForResource:@"test" ofType:@"wav"];
+        
+        self.outputAudioFile = [EZAudioFile audioFileWithURL:[NSURL fileURLWithPath:outputFilePath]];
+        [self.outputAudioFile getWaveformDataWithCompletionBlock:^(float **waveformData, int length) {
+            outputFileAmplitudes = [[NSMutableArray alloc] initWithCapacity:length];
+            
+            for (int i=0; i<length; i++) {
+                [outputFileAmplitudes addObject:@(waveformData[0][i])];
+            }
+            
+            amplitudesDifference = [[NSMutableArray alloc] initWithCapacity:length];
+            
+            for (int i=0; i<length; i++) {
+                [amplitudesDifference addObject:@([outputFileAmplitudes[i] floatValue] - [inputFileAmplitudes[i] floatValue])];
+            }
+            
+            NSLog(@"%@", amplitudesDifference);
+            
+        }];
+        
+    }];
+
+}
+
 #pragma mark- FDWaveformView Plots
 
 - (void)showInputWAVWaveform {
     
-    NSString *sourceFilePath = [[NSBundle mainBundle] pathForResource:@"wavTestFile" ofType:@"wav"];
+    NSString *sourceFilePath = [[NSBundle mainBundle] pathForResource:@"a2002011001-e02" ofType:@"wav"];
     
     self.inputAudioView.wavesColor = [UIColor redColor];
     self.inputAudioView.audioURL = [NSURL fileURLWithPath:sourceFilePath];

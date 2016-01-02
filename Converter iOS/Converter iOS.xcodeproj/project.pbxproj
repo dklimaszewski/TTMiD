@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		1C7329851C0B275300A174B5 /* AACViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C7329841C0B275300A174B5 /* AACViewController.m */; };
+		1C7329871C0B445200A174B5 /* a2002011001-e02.wav in Resources */ = {isa = PBXBuildFile; fileRef = 1C7329861C0B445200A174B5 /* a2002011001-e02.wav */; };
+		1C7329891C0B476A00A174B5 /* test.wav in Resources */ = {isa = PBXBuildFile; fileRef = 1C7329881C0B476A00A174B5 /* test.wav */; };
 		1C75451D1C09CD920075BDAE /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C75451C1C09CD920075BDAE /* main.m */; };
 		1C7545201C09CD920075BDAE /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1C75451F1C09CD920075BDAE /* AppDelegate.mm */; };
 		1C7545231C09CD920075BDAE /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C7545221C09CD920075BDAE /* ViewController.m */; };
@@ -28,6 +30,8 @@
 /* Begin PBXFileReference section */
 		1C7329831C0B275300A174B5 /* AACViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AACViewController.h; sourceTree = "<group>"; };
 		1C7329841C0B275300A174B5 /* AACViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AACViewController.m; sourceTree = "<group>"; };
+		1C7329861C0B445200A174B5 /* a2002011001-e02.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "a2002011001-e02.wav"; sourceTree = "<group>"; };
+		1C7329881C0B476A00A174B5 /* test.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = test.wav; sourceTree = "<group>"; };
 		1C7545181C09CD920075BDAE /* Converter iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Converter iOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		1C75451C1C09CD920075BDAE /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		1C75451E1C09CD920075BDAE /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -77,6 +81,8 @@
 			children = (
 				1C7329831C0B275300A174B5 /* AACViewController.h */,
 				1C7329841C0B275300A174B5 /* AACViewController.m */,
+				1C7329861C0B445200A174B5 /* a2002011001-e02.wav */,
+				1C7329881C0B476A00A174B5 /* test.wav */,
 			);
 			name = AAC;
 			sourceTree = "<group>";
@@ -222,9 +228,11 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1C7329891C0B476A00A174B5 /* test.wav in Resources */,
 				1C7545491C09D3A10075BDAE /* wavTestFile.wav in Resources */,
 				1C75452B1C09CD920075BDAE /* LaunchScreen.storyboard in Resources */,
 				1C7545281C09CD920075BDAE /* Assets.xcassets in Resources */,
+				1C7329871C0B445200A174B5 /* a2002011001-e02.wav in Resources */,
 				1C7545261C09CD920075BDAE /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
