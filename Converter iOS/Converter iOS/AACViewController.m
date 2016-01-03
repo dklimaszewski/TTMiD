@@ -26,15 +26,15 @@ static Boolean IsAACEncoderAvailable(void)
     UInt32 size;
     
     OSStatus result = AudioFormatGetPropertyInfo(kAudioFormatProperty_Encoders, sizeof(encoderSpecifier), &encoderSpecifier, &size);
-    if (result) { printf("AudioFormatGetPropertyInfo kAudioFormatProperty_Encoders result %lu %4.4s\n", result, (char*)&result); return false; }
+    if (result) { printf("AudioFormatGetPropertyInfo kAudioFormatProperty_Encoders result %d %4.4s\n", (int)result, (char*)&result); return false; }
     
     UInt32 numEncoders = size / sizeof(AudioClassDescription);
     AudioClassDescription encoderDescriptions[numEncoders];
     
     result = AudioFormatGetProperty(kAudioFormatProperty_Encoders, sizeof(encoderSpecifier), &encoderSpecifier, &size, encoderDescriptions);
-    if (result) { printf("AudioFormatGetProperty kAudioFormatProperty_Encoders result %lu %4.4s\n", result, (char*)&result); return false; }
+    if (result) { printf("AudioFormatGetProperty kAudioFormatProperty_Encoders result %d %4.4s\n", (int)result, (char*)&result); return false; }
     
-    printf("Number of AAC encoders available: %lu\n", numEncoders);
+    printf("Number of AAC encoders available: %u\n", (unsigned int)numEncoders);
     
     // with iOS 7.0 AAC software encode is always available
     // older devices like the iPhone 4s also have a slower/less flexible hardware encoded for supporting AAC encode on older systems
@@ -83,7 +83,14 @@ static void UpdateFormatInfo(CFURLRef inFileURL)
 }
 
 @interface AACViewController () {
-    NSString *destinationFilePath;
+    NSString *aacFilePath;
+    NSString *wavFilePath;
+    
+    NSString *destinationAACFilePath;
+    NSString *destinationWAVFilePath;
+    
+    NSMutableDictionary *outputSettings;
+    
     CFURLRef sourceURL;
     CFURLRef destinationURL;
     OSType   outputFormat;
@@ -103,7 +110,6 @@ static void UpdateFormatInfo(CFURLRef inFileURL)
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-//    [self compareAudioFiles];
     [self showInputWAVWaveform];
 }
 
@@ -112,67 +118,176 @@ static void UpdateFormatInfo(CFURLRef inFileURL)
     // Dispose of any resources that can be recreated.
 }
 
+#pragma mark- WAV->AAC
+
 - (IBAction)convertWAVtoAAC:(id)sender {
-    outputFormat = kAudioFormatMPEG4AAC;//kAudioFormatMPEG4AAC_HE_V2
     
-    NSString *source = [[NSBundle mainBundle] pathForResource:@"a2002011001-e02" ofType:@"wav"];
-    sourceURL = CFURLCreateWithFileSystemPath(kCFAllocatorDefault, (CFStringRef)source, kCFURLPOSIXPathStyle, false);
+    outputFormat = kAudioFormatMPEG4AAC;
     
     NSArray  *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
     NSString *documentsDirectory = [paths objectAtIndex:0];
-    destinationFilePath = [[NSString alloc] initWithFormat: @"%@/output.m4a", documentsDirectory];
+    destinationAACFilePath = [[NSString alloc] initWithFormat: @"%@/output.m4a", documentsDirectory];
     
-    if ([[NSFileManager defaultManager] fileExistsAtPath:destinationFilePath]) {
-        [[NSFileManager defaultManager] removeItemAtPath:destinationFilePath error:nil];
+    if ([[NSFileManager defaultManager] fileExistsAtPath:destinationAACFilePath]) {
+        [[NSFileManager defaultManager] removeItemAtPath:destinationAACFilePath error:nil];
     }
     
-    NSLog(@"Destination File Path: %@", destinationFilePath);
-    destinationURL = CFURLCreateWithFileSystemPath(kCFAllocatorDefault, (CFStringRef)destinationFilePath, kCFURLPOSIXPathStyle, false);
+    wavFilePath = [[NSBundle mainBundle] pathForResource:@"test" ofType:@"wav"];
     
-    if (IsAACEncoderAvailable()) {
-        NSLog(@"AAC is available");
-    } else {
-        [[[UIAlertView alloc] initWithTitle:@"Error" message:@"AAC not available" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
-        
-        return;
-    }
-    
-    UpdateFormatInfo(sourceURL);
+    outputSettings = [NSMutableDictionary dictionaryWithDictionary:@{
+                                                                     AVFormatIDKey : @(kAudioFormatMPEG4AAC),
+                                                                     AVSampleRateKey : @(44100.0),
+                                                                     AVEncoderBitRateKey : @(128000)
+                                                                     }];
     
     [self convert];
 }
+
+- (void)convert {
+    
+    NSLog(@"Destination File Path: %@", destinationAACFilePath);
+    
+    AVAsset *asset = [AVURLAsset URLAssetWithURL:[NSURL fileURLWithPath:wavFilePath] options:nil];
+    
+    NSURL *exportURL = [NSURL fileURLWithPath:destinationAACFilePath];
+    
+    // reader
+    NSError *readerError = nil;
+    AVAssetReader *reader = [[AVAssetReader alloc] initWithAsset:asset
+                                                           error:&readerError];
+    
+    AVAssetTrack *track = [[asset tracksWithMediaType:AVMediaTypeAudio] objectAtIndex:0];
+    NSArray *formatDesc = track.formatDescriptions;
+    
+    AVAssetReaderTrackOutput *readerOutput = [[AVAssetReaderTrackOutput alloc] initWithTrack:track
+                                                                              outputSettings:nil];
+    [reader addOutput:readerOutput];
+    
+    // writer
+    NSError *writerError = nil;
+    AVAssetWriter *writer = [[AVAssetWriter alloc] initWithURL:exportURL
+                                                      fileType:AVFileTypeAppleM4A
+                                                         error:&writerError];
+    
+    
+    for(unsigned int i=0; i<[formatDesc count]; i++) {
+        CMAudioFormatDescriptionRef item = (__bridge CMAudioFormatDescriptionRef)[formatDesc objectAtIndex:i];
+        const AudioStreamBasicDescription *asbd = CMAudioFormatDescriptionGetStreamBasicDescription (item);
+        if(asbd) {
+            [outputSettings setObject:@(asbd->mChannelsPerFrame) forKey:AVNumberOfChannelsKey];
+            
+            AudioChannelLayout channelLayout;
+            memset(&channelLayout, 0, sizeof(AudioChannelLayout));
+            if (asbd->mChannelsPerFrame == 1) {
+                channelLayout.mChannelLayoutTag = kAudioChannelLayoutTag_Mono;
+            } else {
+                channelLayout.mChannelLayoutTag = kAudioChannelLayoutTag_Stereo;
+            }
+            
+            [outputSettings setObject:[NSData dataWithBytes:&channelLayout length:sizeof(AudioChannelLayout)] forKey:AVChannelLayoutKey];
+        }
+    }
+    
+    AVAssetWriterInput *writerInput = [[AVAssetWriterInput alloc] initWithMediaType:AVMediaTypeAudio
+                                                                     outputSettings:outputSettings];
+    [writerInput setExpectsMediaDataInRealTime:NO];
+    [writer addInput:writerInput];
+    
+    [writer startWriting];
+    [writer startSessionAtSourceTime:kCMTimeZero];
+    
+    [reader startReading];
+    dispatch_queue_t mediaInputQueue = dispatch_queue_create("mediaInputQueue", NULL);
+    [writerInput requestMediaDataWhenReadyOnQueue:mediaInputQueue usingBlock:^{
+        
+        NSLog(@"Asset Writer ready : %d", writerInput.readyForMoreMediaData);
+        while (writerInput.readyForMoreMediaData) {
+            CMSampleBufferRef nextBuffer;
+            if ([reader status] == AVAssetReaderStatusReading && (nextBuffer = [readerOutput copyNextSampleBuffer])) {
+                if (nextBuffer) {
+                    NSLog(@"Adding buffer");
+                    [writerInput appendSampleBuffer:nextBuffer];
+                }
+            } else {
+                [writerInput markAsFinished];
+                
+                switch ([reader status]) {
+                    case AVAssetReaderStatusReading:
+                        break;
+                    case AVAssetReaderStatusFailed:
+                    case AVAssetReaderStatusCancelled:
+                    case AVAssetReaderStatusUnknown:
+                        [writer cancelWriting];
+                        break;
+                    case AVAssetReaderStatusCompleted:
+                        NSLog(@"Writer completed");
+                        [writer endSessionAtSourceTime:asset.duration];
+                        [writer finishWritingWithCompletionHandler:^{
+                            NSLog(@"Finished converting");
+                            
+                            if (outputFormat == kAudioFormatMPEG4AAC) {
+                                dispatch_async(dispatch_get_main_queue(), ^{
+                                    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Success!" message:@"Audio Converted" preferredStyle:UIAlertControllerStyleAlert];
+                                    [alert addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil]];
+                                    [self presentViewController:alert animated:YES completion:nil];
+                                });
+                                
+                            } else if (outputFormat == kAudioFormatLinearPCM) {
+                                
+                                dispatch_async(dispatch_get_main_queue(), ^{
+                                    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Success!" message:@"Audio Converted" preferredStyle:UIAlertControllerStyleAlert];
+                                    [alert addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil]];
+                                    [self presentViewController:alert animated:YES completion:nil];
+                                    
+                                    [self performSelector:@selector(showWAVWaveform) withObject:nil afterDelay:1.0];
+                                    
+                                    [self performSelector:@selector(compareAudioFiles) withObject:nil afterDelay:1.0];
+                                });
+                            }
+                            
+                        }];
+                        break;
+                }
+                break;
+            }
+        }
+    }];
+}
+
+#pragma mark- AAC->WAV
 
 - (IBAction)convertAACtoWAV:(id)sender {
     outputFormat = kAudioFormatLinearPCM;
     
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
     NSString *documentsDirectory = [paths objectAtIndex:0];
-    NSString *sourceFilePath = [[NSString alloc] initWithFormat: @"%@/output.m4a", documentsDirectory];
-    CFURLCreateWithFileSystemPath(kCFAllocatorDefault, (CFStringRef)sourceFilePath, kCFURLPOSIXPathStyle, false);
+    aacFilePath = [[NSString alloc] initWithFormat: @"%@/output.m4a", documentsDirectory];
+    sourceURL = CFURLCreateWithFileSystemPath(kCFAllocatorDefault, (CFStringRef)aacFilePath, kCFURLPOSIXPathStyle, false);
     
-    destinationFilePath = [[NSString alloc] initWithFormat: @"%@/output.wav", documentsDirectory];
+    destinationWAVFilePath = [[NSString alloc] initWithFormat: @"%@/output.wav", documentsDirectory];
     
-    if ([[NSFileManager defaultManager] fileExistsAtPath:destinationFilePath]) {
-        [[NSFileManager defaultManager] removeItemAtPath:destinationFilePath error:nil];
+    if ([[NSFileManager defaultManager] fileExistsAtPath:destinationWAVFilePath]) {
+        [[NSFileManager defaultManager] removeItemAtPath:destinationWAVFilePath error:nil];
     }
     
-    NSLog(@"Destination File Path: %@", destinationFilePath);
-    destinationURL = CFURLCreateWithFileSystemPath(kCFAllocatorDefault, (CFStringRef)destinationFilePath, kCFURLPOSIXPathStyle, false);
+    NSLog(@"Destination File Path: %@", destinationWAVFilePath);
+    destinationURL = CFURLCreateWithFileSystemPath(kCFAllocatorDefault, (CFStringRef)destinationWAVFilePath, kCFURLPOSIXPathStyle, false);
     
     if (IsAACEncoderAvailable()) {
         NSLog(@"AAC is available");
     } else {
-        [[[UIAlertView alloc] initWithTitle:@"Error" message:@"AAC not available" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
-        
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Error" message:@"AAC not available" preferredStyle:UIAlertControllerStyleAlert];
+        [alert addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil]];
+        [self presentViewController:alert animated:YES completion:nil];
         return;
     }
     
     UpdateFormatInfo(sourceURL);
     
-    [self convert];
+    [self convertAAC];
 }
 
-- (void)convert {
+- (void)convertAAC {
     NSError *error = nil;
     [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryAudioProcessing error:&error];
     if (error) {
@@ -187,33 +302,38 @@ static void UpdateFormatInfo(CFURLRef inFileURL)
 
 #pragma mark- ExtAudioFile
 
-- (void)convertAudio
-{
+- (void)convertAudio {
     @autoreleasepool {
         OSStatus error = DoConvertFile(sourceURL, destinationURL, outputFormat, sampleRate, 64000);
         
         if (error) {
             // delete output file if it exists since an error was returned during the conversion process
-            if ([[NSFileManager defaultManager] fileExistsAtPath:destinationFilePath]) {
-                [[NSFileManager defaultManager] removeItemAtPath:destinationFilePath error:nil];
+            if ([[NSFileManager defaultManager] fileExistsAtPath:destinationWAVFilePath]) {
+                [[NSFileManager defaultManager] removeItemAtPath:destinationWAVFilePath error:nil];
             }
             
             printf("DoConvertFile failed! %d\n", (int)error);
             dispatch_async(dispatch_get_main_queue(), ^{
-                [[[UIAlertView alloc] initWithTitle:@"Error" message:@"Converter fail" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
+                UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Error" message:@"Converter fail" preferredStyle:UIAlertControllerStyleAlert];
+                [alert addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil]];
+                [self presentViewController:alert animated:YES completion:nil];
             });
             
         } else {
             
             if (outputFormat == kAudioFormatMPEG4AAC) {
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    [[[UIAlertView alloc] initWithTitle:@"Success!" message:@"Audio Converted" delegate:nil cancelButtonTitle:@"YAY!!!" otherButtonTitles:nil] show];
+                    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Success!" message:@"Audio Converted" preferredStyle:UIAlertControllerStyleAlert];
+                    [alert addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil]];
+                    [self presentViewController:alert animated:YES completion:nil];
                 });
                 
             } else if (outputFormat == kAudioFormatLinearPCM) {
                 
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    [[[UIAlertView alloc] initWithTitle:@"Success!" message:@"Audio Converted" delegate:nil cancelButtonTitle:@"YAY!!!" otherButtonTitles:nil] show];
+                    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Success!" message:@"Audio Converted" preferredStyle:UIAlertControllerStyleAlert];
+                    [alert addAction:[UIAlertAction actionWithTitle:@"YAY!!!" style:UIAlertActionStyleDefault handler:nil]];
+                    [self presentViewController:alert animated:YES completion:nil];
                     
                     [self performSelector:@selector(showWAVWaveform) withObject:nil afterDelay:1.0];
                     
@@ -234,8 +354,7 @@ static void UpdateFormatInfo(CFURLRef inFileURL)
     __block NSMutableArray *outputFileAmplitudes;
     __block NSMutableArray *amplitudesDifference;
     
-    NSString *sourceFilePath = [[NSBundle mainBundle] pathForResource:@"a2002011001-e02" ofType:@"wav"];
-    self.inputAudioFile = [EZAudioFile audioFileWithURL:[NSURL fileURLWithPath:sourceFilePath]];
+    self.inputAudioFile = [EZAudioFile audioFileWithURL:[NSURL fileURLWithPath:wavFilePath]];
     
     [self.inputAudioFile getWaveformDataWithCompletionBlock:^(float **waveformData, int length) {
         inputFileAmplitudes = [[NSMutableArray alloc] initWithCapacity:length];
@@ -244,12 +363,7 @@ static void UpdateFormatInfo(CFURLRef inFileURL)
             [inputFileAmplitudes addObject:@(waveformData[0][i])];
         }
         
-        NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-        NSString *documentsDirectory = [paths objectAtIndex:0];
-        NSString *outputFilePath = [[NSString alloc] initWithFormat: @"%@/output.wav", documentsDirectory];
-//        NSString *outputFilePath = [[NSBundle mainBundle] pathForResource:@"test" ofType:@"wav"];
-        
-        self.outputAudioFile = [EZAudioFile audioFileWithURL:[NSURL fileURLWithPath:outputFilePath]];
+        self.outputAudioFile = [EZAudioFile audioFileWithURL:[NSURL fileURLWithPath:destinationWAVFilePath]];
         [self.outputAudioFile getWaveformDataWithCompletionBlock:^(float **waveformData, int length) {
             outputFileAmplitudes = [[NSMutableArray alloc] initWithCapacity:length];
             
@@ -268,7 +382,7 @@ static void UpdateFormatInfo(CFURLRef inFileURL)
         }];
         
     }];
-
+    
 }
 
 #pragma mark- FDWaveformView Plots
