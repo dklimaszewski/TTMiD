@@ -7,7 +7,6 @@
 //
 
 #import "ViewController.h"
-#import <FFmpegWrapper.h>
 #import <AVFoundation/AVFoundation.h>
 
 @interface ViewController ()
