@@ -110,6 +110,8 @@ static void UpdateFormatInfo(CFURLRef inFileURL)
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    wavFilePath = [[NSBundle mainBundle] pathForResource:@"test" ofType:@"wav"];
+    
     [self showInputWAVWaveform];
 }
 
@@ -131,8 +133,6 @@ static void UpdateFormatInfo(CFURLRef inFileURL)
     if ([[NSFileManager defaultManager] fileExistsAtPath:destinationAACFilePath]) {
         [[NSFileManager defaultManager] removeItemAtPath:destinationAACFilePath error:nil];
     }
-    
-    wavFilePath = [[NSBundle mainBundle] pathForResource:@"test" ofType:@"wav"];
     
     //22050.0 -> 32000
     //44100.0 -> 64000, 128000
@@ -241,7 +241,7 @@ static void UpdateFormatInfo(CFURLRef inFileURL)
                                     [alert addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil]];
                                     [self presentViewController:alert animated:YES completion:nil];
                                     
-                                    [self performSelector:@selector(showWAVWaveform) withObject:nil afterDelay:1.0];
+                                    [self performSelector:@selector(showOutputWAVWaveform) withObject:nil afterDelay:1.0];
                                     
                                     [self performSelector:@selector(compareAudioFiles) withObject:nil afterDelay:1.0];
                                 });
@@ -337,7 +337,7 @@ static void UpdateFormatInfo(CFURLRef inFileURL)
                     [alert addAction:[UIAlertAction actionWithTitle:@"YAY!!!" style:UIAlertActionStyleDefault handler:nil]];
                     [self presentViewController:alert animated:YES completion:nil];
                     
-                    [self performSelector:@selector(showWAVWaveform) withObject:nil afterDelay:1.0];
+                    [self performSelector:@selector(showOutputWAVWaveform) withObject:nil afterDelay:1.0];
                     
                     [self performSelector:@selector(compareAudioFiles) withObject:nil afterDelay:1.0];
                 });
@@ -391,21 +391,15 @@ static void UpdateFormatInfo(CFURLRef inFileURL)
 
 - (void)showInputWAVWaveform {
     
-    NSString *sourceFilePath = [[NSBundle mainBundle] pathForResource:@"a2002011001-e02" ofType:@"wav"];
-    
     self.inputAudioView.wavesColor = [UIColor redColor];
-    self.inputAudioView.audioURL = [NSURL fileURLWithPath:sourceFilePath];
+    self.inputAudioView.audioURL = [NSURL fileURLWithPath:wavFilePath];
     
 }
 
-- (void)showWAVWaveform {
-    
-    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-    NSString *documentsDirectory = [paths objectAtIndex:0];
-    NSString *sourceFilePath = [[NSString alloc] initWithFormat: @"%@/output.wav", documentsDirectory];
+- (void)showOutputWAVWaveform {
     
     self.wavAudioView.wavesColor = [UIColor blueColor];
-    self.wavAudioView.audioURL = [NSURL fileURLWithPath:sourceFilePath];
+    self.wavAudioView.audioURL = [NSURL fileURLWithPath:destinationWAVFilePath];
     
 }
 @end
