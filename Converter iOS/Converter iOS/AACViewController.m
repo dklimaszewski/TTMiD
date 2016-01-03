@@ -134,10 +134,12 @@ static void UpdateFormatInfo(CFURLRef inFileURL)
     
     wavFilePath = [[NSBundle mainBundle] pathForResource:@"test" ofType:@"wav"];
     
+    //22050.0 -> 32000
+    //44100.0 -> 64000, 128000
     outputSettings = [NSMutableDictionary dictionaryWithDictionary:@{
                                                                      AVFormatIDKey : @(kAudioFormatMPEG4AAC),
-                                                                     AVSampleRateKey : @(44100.0),
-                                                                     AVEncoderBitRateKey : @(128000)
+                                                                     AVSampleRateKey : @(22050.0),
+                                                                     AVEncoderBitRateKey : @(32000)
                                                                      }];
     
     [self convert];
