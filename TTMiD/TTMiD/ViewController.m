@@ -19,7 +19,6 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view, typically from a nib.
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -28,13 +27,11 @@
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
 }
 
 - (IBAction)readAudioAction:(id)sender {
     
     NSURL *url = [[NSBundle mainBundle] URLForResource:@"M1F1-Alaw-AFsp" withExtension:@"wav"];
-
     NSData *data = [NSData dataWithContentsOfURL:url];
     /*AVURLAsset *audioAsset = [AVURLAsset URLAssetWithURL:url options:nil];
 
@@ -63,8 +60,6 @@
     }
     
     AVAssetTrack *track = [[anAssetToUseInAComposition tracksWithMediaType:AVMediaTypeAudio] objectAtIndex:0];
-    
-    
     AVAssetReaderTrackOutput *readerOutput = [AVAssetReaderTrackOutput assetReaderTrackOutputWithTrack:track outputSettings:@{ AVFormatIDKey : @(kAudioFormatLinearPCM) }];
     
     NSError *error;
@@ -92,15 +87,11 @@
         }
         
         //TU NA OPUSA!
-        
         CFRelease(sample);
     }
-    
 }
 
 - (IBAction)convertToOpus:(id)sender {
-    
-    
     
 }
 

@@ -133,6 +133,24 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		F01ABADE1C3A86A300F07222 /* Storyboards */ = {
+			isa = PBXGroup;
+			children = (
+				F07DE1571BEF83C50081FB2B /* Main.storyboard */,
+				F07DE15C1BEF83C50081FB2B /* LaunchScreen.storyboard */,
+			);
+			name = Storyboards;
+			sourceTree = "<group>";
+		};
+		F01ABADF1C3A86D300F07222 /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				F07DE1541BEF83C50081FB2B /* ViewController.h */,
+				F07DE1551BEF83C50081FB2B /* ViewController.m */,
+			);
+			name = Controllers;
+			sourceTree = "<group>";
+		};
 		F07DE1421BEF83C50081FB2B = {
 			isa = PBXGroup;
 			children = (
@@ -158,16 +176,11 @@
 		F07DE14D1BEF83C50081FB2B /* TTMiD */ = {
 			isa = PBXGroup;
 			children = (
+				F07DE15A1BEF83C50081FB2B /* Assets.xcassets */,
 				1CF52DE41BEF85D1007485A5 /* Audio Files */,
 				1CF52DC61BEF848F007485A5 /* Codecs */,
-				F07DE1511BEF83C50081FB2B /* AppDelegate.h */,
-				F07DE1521BEF83C50081FB2B /* AppDelegate.m */,
-				F07DE1541BEF83C50081FB2B /* ViewController.h */,
-				F07DE1551BEF83C50081FB2B /* ViewController.m */,
-				F07DE1571BEF83C50081FB2B /* Main.storyboard */,
-				F07DE15A1BEF83C50081FB2B /* Assets.xcassets */,
-				F07DE15C1BEF83C50081FB2B /* LaunchScreen.storyboard */,
-				F07DE15F1BEF83C50081FB2B /* Info.plist */,
+				F01ABADF1C3A86D300F07222 /* Controllers */,
+				F01ABADE1C3A86A300F07222 /* Storyboards */,
 				F07DE14E1BEF83C50081FB2B /* Supporting Files */,
 			);
 			path = TTMiD;
@@ -176,7 +189,10 @@
 		F07DE14E1BEF83C50081FB2B /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				F07DE1511BEF83C50081FB2B /* AppDelegate.h */,
+				F07DE1521BEF83C50081FB2B /* AppDelegate.m */,
 				F07DE14F1BEF83C50081FB2B /* main.m */,
+				F07DE15F1BEF83C50081FB2B /* Info.plist */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
