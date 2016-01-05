@@ -117,18 +117,12 @@
 		1C75451A1C09CD920075BDAE /* Converter iOS */ = {
 			isa = PBXGroup;
 			children = (
-				C6DE7D851C3B04A1006BB821 /* MP3 */,
-				1C7329821C0B273E00A174B5 /* AAC */,
-				1C7545351C09CE450075BDAE /* Utilities */,
-				1C75451E1C09CD920075BDAE /* AppDelegate.h */,
-				1C75451F1C09CD920075BDAE /* AppDelegate.mm */,
-				1C7545211C09CD920075BDAE /* ViewController.h */,
-				1C7545221C09CD920075BDAE /* ViewController.m */,
-				1C7545241C09CD920075BDAE /* Main.storyboard */,
 				1C7545271C09CD920075BDAE /* Assets.xcassets */,
-				1C7545291C09CD920075BDAE /* LaunchScreen.storyboard */,
-				1C75452C1C09CD920075BDAE /* Info.plist */,
-				1C7545461C09D1DA0075BDAE /* wavTestFile.wav */,
+				F042EBA61C3C076C0005BAD4 /* Codecs */,
+				F042EBA51C3C073C0005BAD4 /* Audio Files */,
+				F042EBA41C3C07310005BAD4 /* Storyboards */,
+				1C7545351C09CE450075BDAE /* Utilities */,
+				F042EBA71C3C078C0005BAD4 /* Controllers */,
 				1C75451B1C09CD920075BDAE /* Supporting Files */,
 			);
 			path = "Converter iOS";
@@ -137,6 +131,9 @@
 		1C75451B1C09CD920075BDAE /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				1C75451E1C09CD920075BDAE /* AppDelegate.h */,
+				1C75451F1C09CD920075BDAE /* AppDelegate.mm */,
+				1C75452C1C09CD920075BDAE /* Info.plist */,
 				1C75451C1C09CD920075BDAE /* main.m */,
 			);
 			name = "Supporting Files";
@@ -185,6 +182,41 @@
 				C6DE7D8A1C3B04C5006BB821 /* MP3ViewController.m */,
 			);
 			name = MP3;
+			sourceTree = "<group>";
+		};
+		F042EBA41C3C07310005BAD4 /* Storyboards */ = {
+			isa = PBXGroup;
+			children = (
+				1C7545291C09CD920075BDAE /* LaunchScreen.storyboard */,
+				1C7545241C09CD920075BDAE /* Main.storyboard */,
+			);
+			name = Storyboards;
+			sourceTree = "<group>";
+		};
+		F042EBA51C3C073C0005BAD4 /* Audio Files */ = {
+			isa = PBXGroup;
+			children = (
+				1C7545461C09D1DA0075BDAE /* wavTestFile.wav */,
+			);
+			name = "Audio Files";
+			sourceTree = "<group>";
+		};
+		F042EBA61C3C076C0005BAD4 /* Codecs */ = {
+			isa = PBXGroup;
+			children = (
+				1C7329821C0B273E00A174B5 /* AAC */,
+				C6DE7D851C3B04A1006BB821 /* MP3 */,
+			);
+			name = Codecs;
+			sourceTree = "<group>";
+		};
+		F042EBA71C3C078C0005BAD4 /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				1C7545211C09CD920075BDAE /* ViewController.h */,
+				1C7545221C09CD920075BDAE /* ViewController.m */,
+			);
+			name = Controllers;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
