@@ -134,10 +134,10 @@ static void UpdateFormatInfo(CFURLRef inFileURL)
     //22050.0 -> 32000
     //44100.0 -> 64000, 128000
     self.outputSettings = [NSMutableDictionary dictionaryWithDictionary:@{
-                                                                     AVFormatIDKey : @(kAudioFormatMPEG4AAC),
-                                                                     AVSampleRateKey : @(22050.0),
-                                                                     AVEncoderBitRateKey : @(32000)
-                                                                     }];
+                                                                          AVFormatIDKey : @(kAudioFormatMPEG4AAC),
+                                                                          AVSampleRateKey : @(22050.0),
+                                                                          AVEncoderBitRateKey : @(32000)
+                                                                          }];
     
     [self convert];
 }
@@ -303,7 +303,7 @@ static void UpdateFormatInfo(CFURLRef inFileURL)
 
 - (void)convertAudio {
     @autoreleasepool {
-        OSStatus error = DoConvertFile(sourceURL, destinationURL, outputFormat, 0, 0);
+        OSStatus error = DoConvertFile(sourceURL, destinationURL, outputFormat, 44100, 0);
         
         if (error) {
             // delete output file if it exists since an error was returned during the conversion process
@@ -395,4 +395,147 @@ static void UpdateFormatInfo(CFURLRef inFileURL)
     self.wavAudioView.audioURL = [NSURL fileURLWithPath:self.destinationWAVFilePath];
     
 }
+
+#pragma mark- FFT
+- (IBAction)doFFT:(id)sender {
+    
+    CFURLRef inputFileURL = CFURLCreateWithFileSystemPath(kCFAllocatorDefault,
+                                                          (__bridge CFStringRef)self.wavFilePath,
+                                                          kCFURLPOSIXPathStyle,
+                                                          false);
+    ExtAudioFileRef fileRef;
+    ExtAudioFileOpenURL(inputFileURL, &fileRef);
+    
+    CFURLRef inputFileURL2 = CFURLCreateWithFileSystemPath(kCFAllocatorDefault,
+                                                           (__bridge CFStringRef)self.destinationWAVFilePath,
+                                                           kCFURLPOSIXPathStyle,
+                                                           false);
+    ExtAudioFileRef fileRef2;
+    ExtAudioFileOpenURL(inputFileURL2, &fileRef2);
+    
+    AudioStreamBasicDescription audioFormat;
+    audioFormat.mSampleRate = 44100;
+    audioFormat.mFormatID = kAudioFormatLinearPCM;
+    audioFormat.mFormatFlags = kLinearPCMFormatFlagIsFloat;
+    audioFormat.mBitsPerChannel = sizeof(Float32) * 8;
+    audioFormat.mChannelsPerFrame = 1; // Mono
+    audioFormat.mBytesPerFrame = audioFormat.mChannelsPerFrame * sizeof(Float32);  // == sizeof(Float32)
+    audioFormat.mFramesPerPacket = 1;
+    audioFormat.mBytesPerPacket = audioFormat.mFramesPerPacket * audioFormat.mBytesPerFrame; // = sizeof(Float32)
+    
+    ExtAudioFileSetProperty(
+                            fileRef,
+                            kExtAudioFileProperty_ClientDataFormat,
+                            sizeof (AudioStreamBasicDescription), //= audioFormat
+                            &audioFormat);
+    
+    ExtAudioFileSetProperty(
+                            fileRef2,
+                            kExtAudioFileProperty_ClientDataFormat,
+                            sizeof (AudioStreamBasicDescription), //= audioFormat
+                            &audioFormat);
+    
+    int numSamples = 1024; //How many samples to read in at a time
+    UInt32 sizePerPacket = audioFormat.mBytesPerPacket; // = sizeof(Float32) = 32bytes
+    UInt32 packetsPerBuffer = numSamples;
+    UInt32 outputBufferSize = packetsPerBuffer * sizePerPacket;
+    
+    UInt8 *outputBuffer = (UInt8 *)malloc(sizeof(UInt8 *) * outputBufferSize);
+    UInt8 *outputBuffer2 = (UInt8 *)malloc(sizeof(UInt8 *) * outputBufferSize);
+    
+    AudioBufferList convertedData;
+    convertedData.mNumberBuffers = 1;    // Set this to 1 for mono
+    convertedData.mBuffers[0].mNumberChannels = audioFormat.mChannelsPerFrame;  //also = 1
+    convertedData.mBuffers[0].mDataByteSize = outputBufferSize;
+    convertedData.mBuffers[0].mData = outputBuffer; //
+    
+    AudioBufferList convertedData2;
+    convertedData2.mNumberBuffers = 1;    // Set this to 1 for mono
+    convertedData2.mBuffers[0].mNumberChannels = audioFormat.mChannelsPerFrame;  //also = 1
+    convertedData2.mBuffers[0].mDataByteSize = outputBufferSize;
+    convertedData2.mBuffers[0].mData = outputBuffer2; //
+    
+    UInt32 frameCount = numSamples;
+    while (frameCount > 0) {
+        ExtAudioFileRead(fileRef, &frameCount, &convertedData);
+        ExtAudioFileRead(fileRef2, &frameCount, &convertedData2);
+        
+        if (frameCount > 0)  {
+            AudioBuffer audioBuffer = convertedData.mBuffers[0];
+            float *samples = (float *)audioBuffer.mData;
+            
+            AudioBuffer audioBuffer2 = convertedData2.mBuffers[0];
+            float *samples2 = (float *)audioBuffer2.mData;
+            
+            vDSP_Length log2n = log2f(numSamples);
+            
+            // Calculate the weights array. This is a one-off operation.
+            FFTSetup fftSetup = vDSP_create_fftsetup(log2n, FFT_RADIX2);
+            FFTSetup fftSetup2 = vDSP_create_fftsetup(log2n, FFT_RADIX2);
+            
+            // For an FFT, numSamples must be a power of 2, i.e. is always even
+            int nOver2 = numSamples/2;
+            
+            // Populate *window with the values for a hamming window function
+            float *window = (float *)malloc(sizeof(float) * numSamples);
+            vDSP_hamm_window(window, numSamples, 0);
+            // Window the samples
+            vDSP_vmul(samples, 1, window, 1, samples, 1, numSamples);
+            free(window);
+            
+            float *window2 = (float *)malloc(sizeof(float) * numSamples);
+            vDSP_hamm_window(window2, numSamples, 0);
+            // Window the samples
+            vDSP_vmul(samples2, 1, window2, 1, samples2, 1, numSamples);
+            free(window2);
+            
+            // Define complex buffer
+            COMPLEX_SPLIT A;
+            A.realp = (float *) malloc(nOver2*sizeof(float));
+            A.imagp = (float *) malloc(nOver2*sizeof(float));
+            
+            COMPLEX_SPLIT B;
+            B.realp = (float *) malloc(nOver2*sizeof(float));
+            B.imagp = (float *) malloc(nOver2*sizeof(float));
+            
+            // Pack samples:
+            // C(re) -> A[n], C(im) -> A[n+1]
+            vDSP_ctoz((COMPLEX*)samples, 2, &A, 1, numSamples/2);
+            vDSP_ctoz((COMPLEX*)samples2, 2, &B, 1, numSamples/2);
+            
+            //Perform a forward FFT using fftSetup and A
+            //Results are returned in A
+            vDSP_fft_zrip(fftSetup, &A, 1, log2n, FFT_FORWARD);
+            vDSP_fft_zrip(fftSetup2, &B, 1, log2n, FFT_FORWARD);
+            
+            //Convert COMPLEX_SPLIT A result to magnitudes
+            float amp[numSamples];
+            float z[numSamples];
+            
+            float amp2[numSamples];
+            float z2[numSamples];
+            
+            amp[0] = A.realp[0]/(numSamples*2);
+            amp2[0] = B.realp[0]/(numSamples*2);
+            for(int i=1; i<numSamples; i++) {
+                amp[i]=A.realp[i]*A.realp[i]+A.imagp[i]*A.imagp[i];
+                amp2[i]=B.realp[i]*B.realp[i]+B.imagp[i]*B.imagp[i];
+                
+                z[i] = sqrtf(amp[i]);
+                z2[i] = sqrtf(amp2[i]);
+            }
+            
+            float sd = 0;
+            for (int i=0; i<numSamples; i++) {
+                sd = sd + powf(10*log10f(z[i])-10*log10f(z2[i]), 2)/numSamples;
+            }
+            
+            printf("%f\n", sd);
+            
+        } else {
+            NSLog(@"Finished");
+        }
+    }
+}
+
 @end

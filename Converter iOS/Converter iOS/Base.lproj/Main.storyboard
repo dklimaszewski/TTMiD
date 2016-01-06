@@ -96,7 +96,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="pgz-4q-96q">
-                                <rect key="frame" x="0.0" y="64" width="300" height="30"/>
+                                <rect key="frame" x="0.0" y="64" width="200" height="30"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="30" id="1Dw-vu-a4B"/>
                                 </constraints>
@@ -106,7 +106,7 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="9uP-au-Fa1">
-                                <rect key="frame" x="300" y="64" width="300" height="30"/>
+                                <rect key="frame" x="200" y="64" width="200" height="30"/>
                                 <state key="normal" title="AAC-&gt;WAV"/>
                                 <connections>
                                     <action selector="convertAACtoWAV:" destination="8LV-zh-f0y" eventType="touchUpInside" id="ITb-3k-Vpr"/>
@@ -122,13 +122,13 @@
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Input file" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ose-Cz-7Pb">
                                         <rect key="frame" x="8" y="8" width="66.5" height="20.5"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                        <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                        <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Output file" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vP2-lJ-bPg">
                                         <rect key="frame" x="8" y="261" width="81" height="20.5"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                        <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                        <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="tHJ-ul-4gA" customClass="FDWaveformView">
@@ -152,6 +152,13 @@
                                     <constraint firstItem="mcd-4i-vUr" firstAttribute="leading" secondItem="xhr-mN-EbT" secondAttribute="leading" id="wdc-lm-4Tl"/>
                                 </constraints>
                             </view>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="tOj-xO-QRA">
+                                <rect key="frame" x="400" y="64" width="200" height="30"/>
+                                <state key="normal" title="FFT"/>
+                                <connections>
+                                    <action selector="doFFT:" destination="8LV-zh-f0y" eventType="touchUpInside" id="Uzn-wF-xfb"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
@@ -160,11 +167,15 @@
                             <constraint firstItem="xhr-mN-EbT" firstAttribute="leading" secondItem="Y6n-Mp-XNb" secondAttribute="leading" id="Aa8-zW-GZG"/>
                             <constraint firstItem="pgz-4q-96q" firstAttribute="leading" secondItem="Y6n-Mp-XNb" secondAttribute="leading" id="GNg-gA-sdo"/>
                             <constraint firstAttribute="trailing" secondItem="xhr-mN-EbT" secondAttribute="trailing" id="Ghj-ox-53Y"/>
-                            <constraint firstItem="pgz-4q-96q" firstAttribute="width" secondItem="Y6n-Mp-XNb" secondAttribute="width" multiplier="1/2" id="VlD-KY-ye5"/>
+                            <constraint firstItem="pgz-4q-96q" firstAttribute="width" secondItem="Y6n-Mp-XNb" secondAttribute="width" multiplier="1/3" id="VlD-KY-ye5"/>
+                            <constraint firstItem="tOj-xO-QRA" firstAttribute="height" secondItem="9uP-au-Fa1" secondAttribute="height" id="f6b-21-xUq"/>
                             <constraint firstItem="9uP-au-Fa1" firstAttribute="height" secondItem="pgz-4q-96q" secondAttribute="height" id="hFl-fd-bhn"/>
-                            <constraint firstAttribute="trailing" secondItem="9uP-au-Fa1" secondAttribute="trailing" id="lJj-2y-KXY"/>
+                            <constraint firstItem="tOj-xO-QRA" firstAttribute="leading" secondItem="9uP-au-Fa1" secondAttribute="trailing" id="hQ8-0S-RUS"/>
+                            <constraint firstItem="tOj-xO-QRA" firstAttribute="centerY" secondItem="9uP-au-Fa1" secondAttribute="centerY" id="lLR-Kj-AdX"/>
+                            <constraint firstItem="tOj-xO-QRA" firstAttribute="width" secondItem="9uP-au-Fa1" secondAttribute="width" id="pQl-8m-z8s"/>
                             <constraint firstItem="pgz-4q-96q" firstAttribute="top" secondItem="h1f-Wa-9FQ" secondAttribute="bottom" id="viq-tM-a8L"/>
                             <constraint firstItem="UWA-Ba-ujd" firstAttribute="top" secondItem="xhr-mN-EbT" secondAttribute="bottom" id="xbN-Y0-Yfu"/>
+                            <constraint firstItem="9uP-au-Fa1" firstAttribute="width" secondItem="pgz-4q-96q" secondAttribute="width" id="ybL-Xn-y42"/>
                             <constraint firstItem="xhr-mN-EbT" firstAttribute="top" secondItem="pgz-4q-96q" secondAttribute="bottom" id="zP5-2C-ZqM"/>
                         </constraints>
                     </view>
@@ -190,7 +201,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="EYo-5x-4Xx">
-                                <rect key="frame" x="0.0" y="64" width="300" height="30"/>
+                                <rect key="frame" x="0.0" y="64" width="200" height="30"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="30" id="Fnh-JJ-ZGT"/>
                                 </constraints>
@@ -200,7 +211,7 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="lBF-oB-VHt">
-                                <rect key="frame" x="300" y="64" width="300" height="30"/>
+                                <rect key="frame" x="200" y="64" width="200" height="30"/>
                                 <state key="normal" title="MP3-&gt;WAV"/>
                                 <connections>
                                     <action selector="convertMP3toWAV:" destination="agD-ns-8k0" eventType="touchUpInside" id="nJN-FZ-jzX"/>
@@ -220,13 +231,13 @@
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Input file" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wGG-7a-QAL">
                                         <rect key="frame" x="8" y="8" width="66.5" height="20.5"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                        <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                        <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="WAV file" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ky8-79-hHw">
                                         <rect key="frame" x="8" y="261" width="63.5" height="20.5"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                        <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                        <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                 </subviews>
@@ -246,18 +257,29 @@
                                     <constraint firstItem="wGG-7a-QAL" firstAttribute="top" secondItem="SrW-Dp-bap" secondAttribute="top" constant="8" id="wxs-76-oim"/>
                                 </constraints>
                             </view>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="3ri-Ey-tqz">
+                                <rect key="frame" x="400" y="64" width="200" height="30"/>
+                                <state key="normal" title="FFT"/>
+                                <connections>
+                                    <action selector="doFFT:" destination="agD-ns-8k0" eventType="touchUpInside" id="hED-k8-V4a"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="lBF-oB-VHt" firstAttribute="centerY" secondItem="EYo-5x-4Xx" secondAttribute="centerY" id="7b7-MK-uOr"/>
                             <constraint firstItem="qh3-RO-u3b" firstAttribute="top" secondItem="i9i-ao-EJy" secondAttribute="bottom" id="7gX-5I-kDT"/>
                             <constraint firstItem="EYo-5x-4Xx" firstAttribute="leading" secondItem="Hqn-9R-4oI" secondAttribute="leading" id="9cN-bW-iLI"/>
+                            <constraint firstItem="lBF-oB-VHt" firstAttribute="width" secondItem="EYo-5x-4Xx" secondAttribute="width" id="CsJ-ry-lm1"/>
+                            <constraint firstItem="3ri-Ey-tqz" firstAttribute="leading" secondItem="lBF-oB-VHt" secondAttribute="trailing" id="FaK-rS-nsl"/>
                             <constraint firstItem="i9i-ao-EJy" firstAttribute="leading" secondItem="Hqn-9R-4oI" secondAttribute="leading" id="J10-2Y-ufs"/>
+                            <constraint firstItem="3ri-Ey-tqz" firstAttribute="width" secondItem="lBF-oB-VHt" secondAttribute="width" id="Lny-Aj-6Oe"/>
                             <constraint firstItem="lBF-oB-VHt" firstAttribute="leading" secondItem="EYo-5x-4Xx" secondAttribute="trailing" id="Qpw-6L-Nc6"/>
                             <constraint firstItem="i9i-ao-EJy" firstAttribute="top" secondItem="EYo-5x-4Xx" secondAttribute="bottom" id="Y9i-8I-Fni"/>
+                            <constraint firstItem="3ri-Ey-tqz" firstAttribute="centerY" secondItem="lBF-oB-VHt" secondAttribute="centerY" id="ZR4-GC-Nwa"/>
                             <constraint firstItem="lBF-oB-VHt" firstAttribute="height" secondItem="EYo-5x-4Xx" secondAttribute="height" id="cFy-Im-ln4"/>
-                            <constraint firstItem="EYo-5x-4Xx" firstAttribute="width" secondItem="Hqn-9R-4oI" secondAttribute="width" multiplier="1/2" id="clB-ev-R4E"/>
-                            <constraint firstAttribute="trailing" secondItem="lBF-oB-VHt" secondAttribute="trailing" id="ij4-Xg-WaH"/>
+                            <constraint firstItem="EYo-5x-4Xx" firstAttribute="width" secondItem="Hqn-9R-4oI" secondAttribute="width" multiplier="1/3" id="clB-ev-R4E"/>
+                            <constraint firstItem="3ri-Ey-tqz" firstAttribute="height" secondItem="lBF-oB-VHt" secondAttribute="height" id="g5D-go-ydx"/>
                             <constraint firstItem="EYo-5x-4Xx" firstAttribute="top" secondItem="qGb-DE-dMn" secondAttribute="bottom" id="vAD-JK-gpk"/>
                             <constraint firstAttribute="trailing" secondItem="i9i-ao-EJy" secondAttribute="trailing" id="wV6-fg-Uho"/>
                         </constraints>

@@ -24,6 +24,7 @@
 		1C7545431C09CE950075BDAE /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C7545421C09CE950075BDAE /* UIKit.framework */; };
 		1C7545451C09CE9B0075BDAE /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C7545441C09CE9B0075BDAE /* AudioToolbox.framework */; };
 		1C7545491C09D3A10075BDAE /* wavTestFile.wav in Resources */ = {isa = PBXBuildFile; fileRef = 1C7545461C09D1DA0075BDAE /* wavTestFile.wav */; };
+		C635992F1C3D9ED3008C21AF /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C635992E1C3D9ED3008C21AF /* Accelerate.framework */; };
 		C661EF011C3C49B0008DA2EC /* lame.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C661EF001C3C49B0008DA2EC /* lame.framework */; };
 		C6DE7D8B1C3B04C5006BB821 /* MP3ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C6DE7D8A1C3B04C5006BB821 /* MP3ViewController.m */; };
 		D2FF5F3FC7F42BADD0515117 /* libPods-Converter iOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C3818D84DD0EE137D983C1BE /* libPods-Converter iOS.a */; };
@@ -60,6 +61,7 @@
 		29B6D3CEE5A441C2FBC019FE /* Pods-Converter iOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Converter iOS.release.xcconfig"; path = "Pods/Target Support Files/Pods-Converter iOS/Pods-Converter iOS.release.xcconfig"; sourceTree = "<group>"; };
 		BA863CE3427B3DBA04E628F6 /* Pods-Converter iOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Converter iOS.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Converter iOS/Pods-Converter iOS.debug.xcconfig"; sourceTree = "<group>"; };
 		C3818D84DD0EE137D983C1BE /* libPods-Converter iOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Converter iOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		C635992E1C3D9ED3008C21AF /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
 		C661EF001C3C49B0008DA2EC /* lame.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = lame.framework; sourceTree = "<group>"; };
 		C6DE7D861C3B04B4006BB821 /* lame.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lame.h; sourceTree = "<group>"; };
 		C6DE7D891C3B04C5006BB821 /* MP3ViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MP3ViewController.h; sourceTree = "<group>"; };
@@ -71,6 +73,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C635992F1C3D9ED3008C21AF /* Accelerate.framework in Frameworks */,
 				1C7545451C09CE9B0075BDAE /* AudioToolbox.framework in Frameworks */,
 				C661EF011C3C49B0008DA2EC /* lame.framework in Frameworks */,
 				1C7545431C09CE950075BDAE /* UIKit.framework in Frameworks */,
@@ -88,8 +91,6 @@
 			children = (
 				1C7329831C0B275300A174B5 /* AACViewController.h */,
 				1C7329841C0B275300A174B5 /* AACViewController.m */,
-				1C7329861C0B445200A174B5 /* a2002011001-e02.wav */,
-				1C7329881C0B476A00A174B5 /* test.wav */,
 			);
 			name = AAC;
 			sourceTree = "<group>";
@@ -164,6 +165,7 @@
 		A763957A48EF617E7C907C04 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				C635992E1C3D9ED3008C21AF /* Accelerate.framework */,
 				C661EF001C3C49B0008DA2EC /* lame.framework */,
 				1C7545441C09CE9B0075BDAE /* AudioToolbox.framework */,
 				1C7545421C09CE950075BDAE /* UIKit.framework */,
@@ -196,6 +198,8 @@
 		F042EBA51C3C073C0005BAD4 /* Audio Files */ = {
 			isa = PBXGroup;
 			children = (
+				1C7329861C0B445200A174B5 /* a2002011001-e02.wav */,
+				1C7329881C0B476A00A174B5 /* test.wav */,
 				1C7545461C09D1DA0075BDAE /* wavTestFile.wav */,
 			);
 			name = "Audio Files";
