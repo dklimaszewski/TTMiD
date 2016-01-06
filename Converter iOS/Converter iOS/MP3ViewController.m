@@ -46,7 +46,7 @@ static void UpdateFormatInfo(CFURLRef inFileURL)
     }
 }
 
-@interface MP3ViewController () {
+@interface MP3ViewController () <EZAudioFileDelegate, EZAudioFFTDelegate, EZOutputDataSource, EZOutputDelegate> {
     CFURLRef sourceURL;
     CFURLRef destinationURL;
 }
@@ -62,6 +62,10 @@ static void UpdateFormatInfo(CFURLRef inFileURL)
 @property (strong, nonatomic) NSString *destinationMP3FilePath;
 @property (strong, nonatomic) NSString *destinationWAVFilePath;
 
+@property (assign, nonatomic) BOOL eof;
+@property (strong, nonatomic) EZOutput *output;
+@property (nonatomic, strong) EZAudioFFTRolling *fft;
+
 @end
 
 @implementation MP3ViewController
@@ -70,6 +74,7 @@ static void UpdateFormatInfo(CFURLRef inFileURL)
     [super viewDidLoad];
     
     self.wavFilePath = [[NSBundle mainBundle] pathForResource:@"test" ofType:@"wav"];
+    self.inputAudioFile = [EZAudioFile audioFileWithURL:[NSURL fileURLWithPath:self.wavFilePath]];
     
     [self showInputWAVWaveform];
 }
@@ -250,6 +255,46 @@ static void UpdateFormatInfo(CFURLRef inFileURL)
     self.inputAudioView.wavesColor = [UIColor redColor];
     self.inputAudioView.audioURL = [NSURL fileURLWithPath:self.wavFilePath];
     
+    [self.inputAudioFile setDelegate:self];
+    
+    //    AudioBufferList *bufferList = [EZAudioUtilities audioBufferListWithNumberOfFrames:1024 numberOfChannels:2 interleaved:YES];
+    //    UInt32 bufferSize;
+    //    BOOL eof;
+    //    [self.inputAudioFile readFrames:1024 audioBufferList:bufferList bufferSize:&bufferSize eof:&eof];
+    
+    //    [EZAudioUtilities freeBufferList:bufferList];
+    
+    self.fft = [EZAudioFFTRolling fftWithWindowSize:1024
+                                         sampleRate:self.inputAudioFile.clientFormat.mSampleRate
+                                           delegate:self];
+    
+    AVAudioSession *session = [AVAudioSession sharedInstance];
+    NSError *error;
+    [session setCategory:AVAudioSessionCategoryPlayback error:&error];
+    if (error)
+    {
+        NSLog(@"Error setting up audio session category: %@", error.localizedDescription);
+    }
+    [session setActive:YES error:&error];
+    if (error)
+    {
+        NSLog(@"Error setting up audio session active: %@", error.localizedDescription);
+    }
+    
+    self.output = [EZOutput outputWithDataSource:self];
+    self.output.delegate = self;
+    
+    [session overrideOutputAudioPort:AVAudioSessionPortOverrideSpeaker error:&error];
+    if (error)
+    {
+        NSLog(@"There was an error sending the audio to the speakers");
+    }
+    
+    
+    if (![self.output isPlaying]) {
+        [self.output setDataSource:self];
+        [self.output startPlayback];
+    }
 }
 
 - (void)showOutputWAVWaveform {
@@ -257,6 +302,40 @@ static void UpdateFormatInfo(CFURLRef inFileURL)
     self.wavAudioView.wavesColor = [UIColor blueColor];
     self.wavAudioView.audioURL = [NSURL fileURLWithPath:self.destinationWAVFilePath];
     
+}
+
+#pragma mark- EZAudioFile Delegates
+- (OSStatus)output:(EZOutput *)output shouldFillAudioBufferList:(AudioBufferList *)audioBufferList withNumberOfFrames:(UInt32)frames timestamp:(const AudioTimeStamp *)timestamp {
+    if (self.inputAudioFile) {
+        
+        UInt32 bufferSize;
+        [self.inputAudioFile readFrames:frames
+                        audioBufferList:audioBufferList
+                             bufferSize:&bufferSize
+                                    eof:&_eof];
+    }
+    
+    return 0;
+}
+
+- (void)audioFile:(EZAudioFile *)audioFile readAudio:(float **)buffer withBufferSize:(UInt32)bufferSize withNumberOfChannels:(UInt32)numberOfChannels {
+    [self.fft computeFFTWithBuffer:buffer[0] withBufferSize:bufferSize];
+}
+
+- (void)        fft:(EZAudioFFT *)fft
+ updatedWithFFTData:(float *)fftData
+         bufferSize:(vDSP_Length)bufferSize
+{
+    float maxFrequency = [fft maxFrequency];
+    NSString *noteName = [EZAudioUtilities noteNameStringForFrequency:maxFrequency
+                                                        includeOctave:YES];
+    
+    __weak typeof (self) weakSelf = self;
+    dispatch_async(dispatch_get_main_queue(), ^{
+//        weakSelf.maxFrequencyLabel.text =
+        NSLog(@"%@", [NSString stringWithFormat:@"Highest Note: %@,\nFrequency: %.2f", noteName, maxFrequency]);
+//        [weakSelf.audioPlotFreq updateBuffer:fftData withBufferSize:(UInt32)bufferSize];
+    });
 }
 
 @end

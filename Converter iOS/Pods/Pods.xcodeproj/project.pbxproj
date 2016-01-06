@@ -673,29 +673,32 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
-		004078FEEFD5D3BE27E5171A013EB436 /* Release */ = {
+		04C948A7B87326019E2D8B2BE6A3F57F /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 59E505DAA615989F956E2EBFD67DAD51 /* Pods-Converter iOS.release.xcconfig */;
+			baseConfigurationReference = 9BA62545DBE031C0A1DA436C08F05126 /* TPCircularBuffer.xcconfig */;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD)";
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_PREFIX_HEADER = "Target Support Files/TPCircularBuffer/TPCircularBuffer-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.1;
-				MACH_O_TYPE = staticlib;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				OTHER_LDFLAGS = "";
 				OTHER_LIBTOOLFLAGS = "";
-				PODS_ROOT = "$(SRCROOT)";
+				PRIVATE_HEADERS_FOLDER_PATH = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PUBLIC_HEADERS_FOLDER_PATH = "";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 			};
 			name = Release;
 		};
-		07A4B36DB090A245EB32EABCE4F899A4 /* Debug */ = {
+		394F9F03F0B7CDB2AA0FEC38AE4E07F6 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = F8D301573110E07B3529C4936AA96D22 /* FDWaveformView.xcconfig */;
+			baseConfigurationReference = 918C23A92290D26FD36EB56826C5AD7C /* EZAudio.xcconfig */;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD)";
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				GCC_PREFIX_HEADER = "Target Support Files/FDWaveformView/FDWaveformView-prefix.pch";
+				GCC_PREFIX_HEADER = "Target Support Files/EZAudio/EZAudio-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.1;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				OTHER_LDFLAGS = "";
@@ -708,28 +711,11 @@
 			};
 			name = Debug;
 		};
-		2150A42885CB3D5FA56650BA6F8D754D /* Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = F8D301573110E07B3529C4936AA96D22 /* FDWaveformView.xcconfig */;
-			buildSettings = {
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				GCC_PREFIX_HEADER = "Target Support Files/FDWaveformView/FDWaveformView-prefix.pch";
-				IPHONEOS_DEPLOYMENT_TARGET = 9.1;
-				MTL_ENABLE_DEBUG_INFO = NO;
-				OTHER_LDFLAGS = "";
-				OTHER_LIBTOOLFLAGS = "";
-				PRIVATE_HEADERS_FOLDER_PATH = "";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				PUBLIC_HEADERS_FOLDER_PATH = "";
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-			};
-			name = Release;
-		};
-		3F9189E061088B53B18E32A46B0C6CD9 /* Release */ = {
+		3BE6D5DA004AFFB977370378777A66A3 /* Release */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 918C23A92290D26FD36EB56826C5AD7C /* EZAudio.xcconfig */;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD)";
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_PREFIX_HEADER = "Target Support Files/EZAudio/EZAudio-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.1;
@@ -744,30 +730,31 @@
 			};
 			name = Release;
 		};
-		4459CC80667F253D373F99D81F2D6221 /* Release */ = {
+		50223C6E1F116DF28B3B4E40821419CF /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 9BA62545DBE031C0A1DA436C08F05126 /* TPCircularBuffer.xcconfig */;
+			baseConfigurationReference = 59E505DAA615989F956E2EBFD67DAD51 /* Pods-Converter iOS.release.xcconfig */;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD)";
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				GCC_PREFIX_HEADER = "Target Support Files/TPCircularBuffer/TPCircularBuffer-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.1;
+				MACH_O_TYPE = staticlib;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				OTHER_LDFLAGS = "";
 				OTHER_LIBTOOLFLAGS = "";
-				PRIVATE_HEADERS_FOLDER_PATH = "";
+				PODS_ROOT = "$(SRCROOT)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PUBLIC_HEADERS_FOLDER_PATH = "";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 			};
 			name = Release;
 		};
-		7058E604C2E5CF01F7ECAE55BD0DFCFE /* Debug */ = {
+		60000F0B1635B031DFDD4210FBA61CFD /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 9BA62545DBE031C0A1DA436C08F05126 /* TPCircularBuffer.xcconfig */;
+			baseConfigurationReference = F8D301573110E07B3529C4936AA96D22 /* FDWaveformView.xcconfig */;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD)";
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				GCC_PREFIX_HEADER = "Target Support Files/TPCircularBuffer/TPCircularBuffer-prefix.pch";
+				GCC_PREFIX_HEADER = "Target Support Files/FDWaveformView/FDWaveformView-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.1;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				OTHER_LDFLAGS = "";
@@ -801,6 +788,44 @@
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 				WRAPPER_EXTENSION = bundle;
+			};
+			name = Release;
+		};
+		859F6F97E7B475A36791B0567C5B4EA3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 9BA62545DBE031C0A1DA436C08F05126 /* TPCircularBuffer.xcconfig */;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD)";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_PREFIX_HEADER = "Target Support Files/TPCircularBuffer/TPCircularBuffer-prefix.pch";
+				IPHONEOS_DEPLOYMENT_TARGET = 9.1;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				OTHER_LDFLAGS = "";
+				OTHER_LIBTOOLFLAGS = "";
+				PRIVATE_HEADERS_FOLDER_PATH = "";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PUBLIC_HEADERS_FOLDER_PATH = "";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		B03EAAC4E2856A28ED48D1FA82D311BF /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = F8D301573110E07B3529C4936AA96D22 /* FDWaveformView.xcconfig */;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD)";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_PREFIX_HEADER = "Target Support Files/FDWaveformView/FDWaveformView-prefix.pch";
+				IPHONEOS_DEPLOYMENT_TARGET = 9.1;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				OTHER_LDFLAGS = "";
+				OTHER_LIBTOOLFLAGS = "";
+				PRIVATE_HEADERS_FOLDER_PATH = "";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PUBLIC_HEADERS_FOLDER_PATH = "";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
 			};
 			name = Release;
 		};
@@ -843,28 +868,11 @@
 			};
 			name = Debug;
 		};
-		CEFB2267DCE888784292A2A3735B1C81 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 918C23A92290D26FD36EB56826C5AD7C /* EZAudio.xcconfig */;
-			buildSettings = {
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				GCC_PREFIX_HEADER = "Target Support Files/EZAudio/EZAudio-prefix.pch";
-				IPHONEOS_DEPLOYMENT_TARGET = 9.1;
-				MTL_ENABLE_DEBUG_INFO = YES;
-				OTHER_LDFLAGS = "";
-				OTHER_LIBTOOLFLAGS = "";
-				PRIVATE_HEADERS_FOLDER_PATH = "";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				PUBLIC_HEADERS_FOLDER_PATH = "";
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-			};
-			name = Debug;
-		};
-		D8F34CF046154A883A5A8449B52C87DE /* Debug */ = {
+		C414FEB632AD88110083CCFECFF68E4F /* Debug */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 5B9DD59ACA87315051B77A09C99F78FD /* Pods-Converter iOS.debug.xcconfig */;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD)";
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.1;
 				MACH_O_TYPE = staticlib;
@@ -927,8 +935,8 @@
 		467C22C79BCC643B344A889D5C2E6F59 /* Build configuration list for PBXNativeTarget "EZAudio" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				CEFB2267DCE888784292A2A3735B1C81 /* Debug */,
-				3F9189E061088B53B18E32A46B0C6CD9 /* Release */,
+				394F9F03F0B7CDB2AA0FEC38AE4E07F6 /* Debug */,
+				3BE6D5DA004AFFB977370378777A66A3 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -936,8 +944,8 @@
 		5A47535DDF80CF161ED2DA1B133D2AFE /* Build configuration list for PBXNativeTarget "TPCircularBuffer" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				7058E604C2E5CF01F7ECAE55BD0DFCFE /* Debug */,
-				4459CC80667F253D373F99D81F2D6221 /* Release */,
+				859F6F97E7B475A36791B0567C5B4EA3 /* Debug */,
+				04C948A7B87326019E2D8B2BE6A3F57F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -945,8 +953,8 @@
 		9DBE824CC24AC143A2542CC9CB993936 /* Build configuration list for PBXNativeTarget "Pods-Converter iOS" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				D8F34CF046154A883A5A8449B52C87DE /* Debug */,
-				004078FEEFD5D3BE27E5171A013EB436 /* Release */,
+				C414FEB632AD88110083CCFECFF68E4F /* Debug */,
+				50223C6E1F116DF28B3B4E40821419CF /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -963,8 +971,8 @@
 		FF2D19B44361864ECCDB16FE5493D497 /* Build configuration list for PBXNativeTarget "FDWaveformView" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				07A4B36DB090A245EB32EABCE4F899A4 /* Debug */,
-				2150A42885CB3D5FA56650BA6F8D754D /* Release */,
+				60000F0B1635B031DFDD4210FBA61CFD /* Debug */,
+				B03EAAC4E2856A28ED48D1FA82D311BF /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
