@@ -135,8 +135,8 @@ static void UpdateFormatInfo(CFURLRef inFileURL)
     //44100.0 -> 64000, 128000
     self.outputSettings = [NSMutableDictionary dictionaryWithDictionary:@{
                                                                           AVFormatIDKey : @(kAudioFormatMPEG4AAC),
-                                                                          AVSampleRateKey : @(22050.0),
-                                                                          AVEncoderBitRateKey : @(32000)
+                                                                          AVSampleRateKey : @(44100.0),
+                                                                          AVEncoderBitRateKey : @(64000)
                                                                           }];
     
     [self convert];
@@ -345,38 +345,38 @@ static void UpdateFormatInfo(CFURLRef inFileURL)
 
 - (void)compareAudioFiles {
     
-    __block NSMutableArray *inputFileAmplitudes;
-    __block NSMutableArray *outputFileAmplitudes;
-    __block NSMutableArray *amplitudesDifference;
-    
-    self.inputAudioFile = [EZAudioFile audioFileWithURL:[NSURL fileURLWithPath:self.wavFilePath]];
-    
-    [self.inputAudioFile getWaveformDataWithCompletionBlock:^(float **waveformData, int length) {
-        inputFileAmplitudes = [[NSMutableArray alloc] initWithCapacity:length];
-        
-        for (int i=0; i<length; i++) {
-            [inputFileAmplitudes addObject:@(waveformData[0][i])];
-        }
-        
-        self.outputAudioFile = [EZAudioFile audioFileWithURL:[NSURL fileURLWithPath:self.destinationWAVFilePath]];
-        [self.outputAudioFile getWaveformDataWithCompletionBlock:^(float **waveformData, int length) {
-            outputFileAmplitudes = [[NSMutableArray alloc] initWithCapacity:length];
-            
-            for (int i=0; i<length; i++) {
-                [outputFileAmplitudes addObject:@(waveformData[0][i])];
-            }
-            
-            amplitudesDifference = [[NSMutableArray alloc] initWithCapacity:length];
-            
-            for (int i=0; i<length; i++) {
-                [amplitudesDifference addObject:@([outputFileAmplitudes[i] floatValue] - [inputFileAmplitudes[i] floatValue])];
-            }
-            
-            NSLog(@"%@", amplitudesDifference);
-            
-        }];
-        
-    }];
+    /*__block NSMutableArray *inputFileAmplitudes;
+     __block NSMutableArray *outputFileAmplitudes;
+     __block NSMutableArray *amplitudesDifference;
+     
+     self.inputAudioFile = [EZAudioFile audioFileWithURL:[NSURL fileURLWithPath:self.wavFilePath]];
+     
+     [self.inputAudioFile getWaveformDataWithCompletionBlock:^(float **waveformData, int length) {
+     inputFileAmplitudes = [[NSMutableArray alloc] initWithCapacity:length];
+     
+     for (int i=0; i<length; i++) {
+     [inputFileAmplitudes addObject:@(waveformData[0][i])];
+     }
+     
+     self.outputAudioFile = [EZAudioFile audioFileWithURL:[NSURL fileURLWithPath:self.destinationWAVFilePath]];
+     [self.outputAudioFile getWaveformDataWithCompletionBlock:^(float **waveformData, int length) {
+     outputFileAmplitudes = [[NSMutableArray alloc] initWithCapacity:length];
+     
+     for (int i=0; i<length; i++) {
+     [outputFileAmplitudes addObject:@(waveformData[0][i])];
+     }
+     
+     amplitudesDifference = [[NSMutableArray alloc] initWithCapacity:length];
+     
+     for (int i=0; i<length; i++) {
+     [amplitudesDifference addObject:@([outputFileAmplitudes[i] floatValue] - [inputFileAmplitudes[i] floatValue])];
+     }
+     
+     NSLog(@"%@", amplitudesDifference);
+     
+     }];
+     
+     }];*/
     
 }
 

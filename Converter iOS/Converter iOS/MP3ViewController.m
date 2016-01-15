@@ -266,76 +266,6 @@ static void UpdateFormatInfo(CFURLRef inFileURL)
     
 }
 
-- (void)playAudioFile {
-    [self.inputAudioFile setDelegate:self];
-    
-    self.fft = [EZAudioFFTRolling fftWithWindowSize:1024
-                                         sampleRate:self.inputAudioFile.clientFormat.mSampleRate
-                                           delegate:self];
-    
-    AVAudioSession *session = [AVAudioSession sharedInstance];
-    NSError *error;
-    [session setCategory:AVAudioSessionCategoryPlayback error:&error];
-    if (error)
-    {
-        NSLog(@"Error setting up audio session category: %@", error.localizedDescription);
-    }
-    [session setActive:YES error:&error];
-    if (error)
-    {
-        NSLog(@"Error setting up audio session active: %@", error.localizedDescription);
-    }
-    
-    self.output = [EZOutput outputWithDataSource:self];
-    self.output.delegate = self;
-    
-    [session overrideOutputAudioPort:AVAudioSessionPortOverrideSpeaker error:&error];
-    if (error)
-    {
-        NSLog(@"There was an error sending the audio to the speakers");
-    }
-    
-    
-    if (![self.output isPlaying]) {
-        [self.output setDataSource:self];
-        [self.output startPlayback];
-    }
-}
-
-#pragma mark- EZAudioFile Delegates
-- (OSStatus)output:(EZOutput *)output shouldFillAudioBufferList:(AudioBufferList *)audioBufferList withNumberOfFrames:(UInt32)frames timestamp:(const AudioTimeStamp *)timestamp {
-    if (self.inputAudioFile) {
-        
-        UInt32 bufferSize;
-        [self.inputAudioFile readFrames:frames
-                        audioBufferList:audioBufferList
-                             bufferSize:&bufferSize
-                                    eof:&_eof];
-    }
-    
-    return 0;
-}
-
-- (void)audioFile:(EZAudioFile *)audioFile readAudio:(float **)buffer withBufferSize:(UInt32)bufferSize withNumberOfChannels:(UInt32)numberOfChannels {
-    [self.fft computeFFTWithBuffer:buffer[0] withBufferSize:bufferSize];
-}
-
-- (void)        fft:(EZAudioFFT *)fft
- updatedWithFFTData:(float *)fftData
-         bufferSize:(vDSP_Length)bufferSize
-{
-    float maxFrequency = [fft maxFrequency];
-    NSString *noteName = [EZAudioUtilities noteNameStringForFrequency:maxFrequency
-                                                        includeOctave:YES];
-    
-    __weak typeof (self) weakSelf = self;
-    dispatch_async(dispatch_get_main_queue(), ^{
-        //        weakSelf.maxFrequencyLabel.text =
-        NSLog(@"%@", [NSString stringWithFormat:@"Highest Note: %@,\nFrequency: %.2f", noteName, maxFrequency]);
-        //        [weakSelf.audioPlotFreq updateBuffer:fftData withBufferSize:(UInt32)bufferSize];
-    });
-}
-
 #pragma mark- FFT
 - (IBAction)doFFT:(id)sender {
     
@@ -414,7 +344,7 @@ static void UpdateFormatInfo(CFURLRef inFileURL)
             FFTSetup fftSetup2 = vDSP_create_fftsetup(log2n, FFT_RADIX2);
             
             // For an FFT, numSamples must be a power of 2, i.e. is always even
-            int nOver2 = numSamples/2;
+//            int nOver2 = numSamples/2;
             
             // Populate *window with the values for a hamming window function
             float *window = (float *)malloc(sizeof(float) * numSamples);
@@ -431,17 +361,17 @@ static void UpdateFormatInfo(CFURLRef inFileURL)
             
             // Define complex buffer
             COMPLEX_SPLIT A;
-            A.realp = (float *) malloc(nOver2*sizeof(float));
-            A.imagp = (float *) malloc(nOver2*sizeof(float));
+            A.realp = (float *) malloc(numSamples*sizeof(float));
+            A.imagp = (float *) malloc(numSamples*sizeof(float));
             
             COMPLEX_SPLIT B;
-            B.realp = (float *) malloc(nOver2*sizeof(float));
-            B.imagp = (float *) malloc(nOver2*sizeof(float));
+            B.realp = (float *) malloc(numSamples*sizeof(float));
+            B.imagp = (float *) malloc(numSamples*sizeof(float));
             
             // Pack samples:
             // C(re) -> A[n], C(im) -> A[n+1]
-            vDSP_ctoz((COMPLEX*)samples, 2, &A, 1, numSamples/2);
-            vDSP_ctoz((COMPLEX*)samples2, 2, &B, 1, numSamples/2);
+            vDSP_ctoz((COMPLEX*)samples, 2, &A, 1, numSamples);
+            vDSP_ctoz((COMPLEX*)samples2, 2, &B, 1, numSamples);
             
             //Perform a forward FFT using fftSetup and A
             //Results are returned in A
@@ -455,20 +385,27 @@ static void UpdateFormatInfo(CFURLRef inFileURL)
             float amp2[numSamples];
             float z2[numSamples];
             
-            amp[0] = A.realp[0]/(numSamples*2);
-            amp2[0] = B.realp[0]/(numSamples*2);
-            for(int i=1; i<numSamples; i++) {
+//            amp[0] = A.realp[0]/(numSamples*2);
+//            amp2[0] = B.realp[0]/(numSamples*2);
+//            z[0] = sqrtf(amp[0]);
+//            z2[0] = sqrtf(amp2[0]);
+            
+            float sd = 0;
+            
+            for(int i=0; i<numSamples; i++) {
                 amp[i]=A.realp[i]*A.realp[i]+A.imagp[i]*A.imagp[i];
                 amp2[i]=B.realp[i]*B.realp[i]+B.imagp[i]*B.imagp[i];
                 
                 z[i] = sqrtf(amp[i]);
                 z2[i] = sqrtf(amp2[i]);
-            }
-            
-            float sd = 0;
-            for (int i=0; i<numSamples; i++) {
+                
                 sd = sd + powf(10*log10f(z[i])-10*log10f(z2[i]), 2)/numSamples;
             }
+            
+            
+//            for (int i=0; i<numSamples; i++) {
+//                sd = sd + powf(10*log10f(z[i])-10*log10f(z2[i]), 2)/numSamples;
+//            }
             
             printf("%f\n", sd);
             
