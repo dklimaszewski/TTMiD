@@ -18,6 +18,7 @@
 #include "CAStreamBasicDescription.h"
 
 #import <Accelerate/Accelerate.h>
+#import <math.h>
 
 extern OSStatus DoConvertFile(CFURLRef sourceURL, CFURLRef destinationURL, OSType outputFormat, Float64 outputSampleRate, UInt32 outputBitRate);
 
@@ -96,17 +97,17 @@ static void UpdateFormatInfo(CFURLRef inFileURL)
         int read, write;
         FILE *pcm = fopen([self.wavFilePath cStringUsingEncoding:1], "rb");
         FILE *mp3 = fopen([self.destinationMP3FilePath cStringUsingEncoding:1], "wb");
-        const int PCM_SIZE = 8192;
-        const int MP3_SIZE = 8192;
+        const int PCM_SIZE = 32768;
+        const int MP3_SIZE = 32768;
         short int pcm_buffer[PCM_SIZE*2];
         unsigned char mp3_buffer[MP3_SIZE];
         
         lame_t lame = lame_init();
-        lame_set_in_samplerate(lame, 44100);
-        lame_set_out_samplerate(lame, 22050);
-        lame_set_VBR(lame, vbr_default);
-        lame_set_quality(lame, 7);
-        lame_set_VBR_quality(lame, 7);
+        lame_set_out_samplerate(lame, 44100);
+        lame_set_quality(lame, 2); // LAME_ENCODING_ENGINE_QUALITY
+        lame_set_brate(lame, 64);
+        lame_set_VBR(lame, vbr_off);
+        lame_set_quality(lame, 1);
         lame_init_params(lame);
         
         do {
@@ -182,7 +183,7 @@ static void UpdateFormatInfo(CFURLRef inFileURL)
 
 - (void)convertAudio {
     @autoreleasepool {
-        OSStatus error = DoConvertFile(sourceURL, destinationURL, kAudioFormatLinearPCM, 0, 0);
+        OSStatus error = DoConvertFile(sourceURL, destinationURL, kAudioFormatLinearPCM, 44100, 0);
         
         if (error) {
             // delete output file if it exists since an error was returned during the conversion process
@@ -205,49 +206,10 @@ static void UpdateFormatInfo(CFURLRef inFileURL)
                 [self presentViewController:alert animated:YES completion:nil];
                 
                 [self performSelector:@selector(showOutputWAVWaveform) withObject:nil afterDelay:1.0];
-                
-                [self performSelector:@selector(compareAudioFiles) withObject:nil afterDelay:1.0];
             });
             
         }
     }
-}
-
-- (void)compareAudioFiles {
-    
-    __block NSMutableArray *inputFileAmplitudes;
-    __block NSMutableArray *outputFileAmplitudes;
-    __block NSMutableArray *amplitudesDifference;
-    
-    self.inputAudioFile = [EZAudioFile audioFileWithURL:[NSURL fileURLWithPath:self.wavFilePath]];
-    
-    [self.inputAudioFile getWaveformDataWithCompletionBlock:^(float **waveformData, int length) {
-        inputFileAmplitudes = [[NSMutableArray alloc] initWithCapacity:length];
-        
-        for (int i=0; i<length; i++) {
-            [inputFileAmplitudes addObject:@(waveformData[0][i])];
-        }
-        
-        self.outputAudioFile = [EZAudioFile audioFileWithURL:[NSURL fileURLWithPath:self.destinationWAVFilePath]];
-        [self.outputAudioFile getWaveformDataWithCompletionBlock:^(float **waveformData, int length) {
-            outputFileAmplitudes = [[NSMutableArray alloc] initWithCapacity:length];
-            
-            for (int i=0; i<length; i++) {
-                [outputFileAmplitudes addObject:@(waveformData[0][i])];
-            }
-            
-            amplitudesDifference = [[NSMutableArray alloc] initWithCapacity:length];
-            
-            for (int i=0; i<length; i++) {
-                [amplitudesDifference addObject:@([outputFileAmplitudes[i] floatValue] - [inputFileAmplitudes[i] floatValue])];
-            }
-            
-            NSLog(@"%@", amplitudesDifference);
-            
-        }];
-        
-    }];
-    
 }
 
 #pragma mark- FDWaveformView Plots
@@ -330,6 +292,7 @@ static void UpdateFormatInfo(CFURLRef inFileURL)
         ExtAudioFileRead(fileRef, &frameCount, &convertedData);
         ExtAudioFileRead(fileRef2, &frameCount, &convertedData2);
         
+        
         if (frameCount > 0)  {
             AudioBuffer audioBuffer = convertedData.mBuffers[0];
             float *samples = (float *)audioBuffer.mData;
@@ -337,75 +300,35 @@ static void UpdateFormatInfo(CFURLRef inFileURL)
             AudioBuffer audioBuffer2 = convertedData2.mBuffers[0];
             float *samples2 = (float *)audioBuffer2.mData;
             
-            vDSP_Length log2n = log2f(numSamples);
             
-            // Calculate the weights array. This is a one-off operation.
-            FFTSetup fftSetup = vDSP_create_fftsetup(log2n, FFT_RADIX2);
-            FFTSetup fftSetup2 = vDSP_create_fftsetup(log2n, FFT_RADIX2);
-            
-            // For an FFT, numSamples must be a power of 2, i.e. is always even
-//            int nOver2 = numSamples/2;
-            
-            // Populate *window with the values for a hamming window function
-            float *window = (float *)malloc(sizeof(float) * numSamples);
-            vDSP_hamm_window(window, numSamples, 0);
-            // Window the samples
-            vDSP_vmul(samples, 1, window, 1, samples, 1, numSamples);
-            free(window);
-            
-            float *window2 = (float *)malloc(sizeof(float) * numSamples);
-            vDSP_hamm_window(window2, numSamples, 0);
-            // Window the samples
-            vDSP_vmul(samples2, 1, window2, 1, samples2, 1, numSamples);
-            free(window2);
-            
-            // Define complex buffer
-            COMPLEX_SPLIT A;
-            A.realp = (float *) malloc(numSamples*sizeof(float));
-            A.imagp = (float *) malloc(numSamples*sizeof(float));
-            
-            COMPLEX_SPLIT B;
-            B.realp = (float *) malloc(numSamples*sizeof(float));
-            B.imagp = (float *) malloc(numSamples*sizeof(float));
-            
-            // Pack samples:
-            // C(re) -> A[n], C(im) -> A[n+1]
-            vDSP_ctoz((COMPLEX*)samples, 2, &A, 1, numSamples);
-            vDSP_ctoz((COMPLEX*)samples2, 2, &B, 1, numSamples);
-            
-            //Perform a forward FFT using fftSetup and A
-            //Results are returned in A
-            vDSP_fft_zrip(fftSetup, &A, 1, log2n, FFT_FORWARD);
-            vDSP_fft_zrip(fftSetup2, &B, 1, log2n, FFT_FORWARD);
-            
-            //Convert COMPLEX_SPLIT A result to magnitudes
-            float amp[numSamples];
             float z[numSamples];
-            
-            float amp2[numSamples];
             float z2[numSamples];
-            
-//            amp[0] = A.realp[0]/(numSamples*2);
-//            amp2[0] = B.realp[0]/(numSamples*2);
-//            z[0] = sqrtf(amp[0]);
-//            z2[0] = sqrtf(amp2[0]);
-            
             float sd = 0;
             
-            for(int i=0; i<numSamples; i++) {
-                amp[i]=A.realp[i]*A.realp[i]+A.imagp[i]*A.imagp[i];
-                amp2[i]=B.realp[i]*B.realp[i]+B.imagp[i]*B.imagp[i];
+            for (int k=1; k<=frameCount; k++) {
+                float ak = 0;
+                float bk = 0;
                 
-                z[i] = sqrtf(amp[i]);
-                z2[i] = sqrtf(amp2[i]);
+                float ak2 = 0;
+                float bk2 = 0;
                 
-                sd = sd + powf(10*log10f(z[i])-10*log10f(z2[i]), 2)/numSamples;
+                for (int n=1; n<=frameCount; n++) {
+                    float alfa = (-2*M_PI*n*k)/frameCount;
+                    
+                    ak = ak + samples[n-1] * cosf(alfa);
+                    bk = bk + samples[n-1] * sinf(alfa);
+                    
+                    ak2 = ak2 + samples2[n-1] * cosf(alfa);
+                    bk2 = bk2 + samples2[n-1] * sinf(alfa);
+                }
+                
+                z[k-1] = sqrtf(powf(ak, 2) + powf(bk, 2));
+                z2[k-1] = sqrtf(powf(ak2, 2) + powf(bk2, 2));
+                
+                
+                sd = sd + powf(10*log10f(z[k-1])-10*log10f(z2[k-1]), 2)/frameCount;
+
             }
-            
-            
-//            for (int i=0; i<numSamples; i++) {
-//                sd = sd + powf(10*log10f(z[i])-10*log10f(z2[i]), 2)/numSamples;
-//            }
             
             printf("%f\n", sd);
             

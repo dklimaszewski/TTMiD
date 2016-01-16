@@ -9,6 +9,8 @@
 #import "AACViewController.h"
 #import <EZAudio.h>
 #import <FDWaveformView.h>
+#import "TPAACAudioConverter.h"
+#import <AVFoundation/AVFoundation.h>
 
 extern OSStatus DoConvertFile(CFURLRef sourceURL, CFURLRef destinationURL, OSType outputFormat, Float64 outputSampleRate, UInt32 outputBitRate);
 
@@ -82,7 +84,7 @@ static void UpdateFormatInfo(CFURLRef inFileURL)
     }
 }
 
-@interface AACViewController () {
+@interface AACViewController () <TPAACAudioConverterDelegate> {
     CFURLRef sourceURL;
     CFURLRef destinationURL;
     OSType   outputFormat;
@@ -99,6 +101,8 @@ static void UpdateFormatInfo(CFURLRef inFileURL)
 @property (strong, nonatomic) NSString *destinationAACFilePath;
 @property (strong, nonatomic) NSString *destinationWAVFilePath;
 @property (strong, nonatomic) NSMutableDictionary *outputSettings;
+
+@property (nonatomic) TPAACAudioConverter *audioConverter;
 
 @end
 
@@ -131,8 +135,7 @@ static void UpdateFormatInfo(CFURLRef inFileURL)
         [[NSFileManager defaultManager] removeItemAtPath:self.destinationAACFilePath error:nil];
     }
     
-    //22050.0 -> 32000
-    //44100.0 -> 64000, 128000
+    //44100.0 -> 64000, 128000, 256000
     self.outputSettings = [NSMutableDictionary dictionaryWithDictionary:@{
                                                                           AVFormatIDKey : @(kAudioFormatMPEG4AAC),
                                                                           AVSampleRateKey : @(44100.0),
@@ -143,114 +146,44 @@ static void UpdateFormatInfo(CFURLRef inFileURL)
 }
 
 - (void)convert {
-    
-    NSLog(@"Destination File Path: %@", self.destinationAACFilePath);
-    
-    AVAsset *asset = [AVURLAsset URLAssetWithURL:[NSURL fileURLWithPath:self.wavFilePath] options:nil];
-    
-    NSURL *exportURL = [NSURL fileURLWithPath:self.destinationAACFilePath];
-    
-    // reader
-    NSError *readerError = nil;
-    AVAssetReader *reader = [[AVAssetReader alloc] initWithAsset:asset
-                                                           error:&readerError];
-    
-    AVAssetTrack *track = [[asset tracksWithMediaType:AVMediaTypeAudio] objectAtIndex:0];
-    NSArray *formatDesc = track.formatDescriptions;
-    
-    AVAssetReaderTrackOutput *readerOutput = [[AVAssetReaderTrackOutput alloc] initWithTrack:track
-                                                                              outputSettings:nil];
-    [reader addOutput:readerOutput];
-    
-    // writer
-    NSError *writerError = nil;
-    AVAssetWriter *writer = [[AVAssetWriter alloc] initWithURL:exportURL
-                                                      fileType:AVFileTypeAppleM4A
-                                                         error:&writerError];
-    
-    
-    for(unsigned int i=0; i<[formatDesc count]; i++) {
-        CMAudioFormatDescriptionRef item = (__bridge CMAudioFormatDescriptionRef)[formatDesc objectAtIndex:i];
-        const AudioStreamBasicDescription *asbd = CMAudioFormatDescriptionGetStreamBasicDescription (item);
-        if(asbd) {
-            [self.outputSettings setObject:@(asbd->mChannelsPerFrame) forKey:AVNumberOfChannelsKey];
-            
-            AudioChannelLayout channelLayout;
-            memset(&channelLayout, 0, sizeof(AudioChannelLayout));
-            if (asbd->mChannelsPerFrame == 1) {
-                channelLayout.mChannelLayoutTag = kAudioChannelLayoutTag_Mono;
-            } else {
-                channelLayout.mChannelLayoutTag = kAudioChannelLayoutTag_Stereo;
-            }
-            
-            [self.outputSettings setObject:[NSData dataWithBytes:&channelLayout length:sizeof(AudioChannelLayout)] forKey:AVChannelLayoutKey];
-        }
+    if ( ![TPAACAudioConverter AACConverterAvailable] ) {
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Converting audio" message:@"Couldn't convert audio: Not supported on this device" preferredStyle:UIAlertControllerStyleAlert];
+        [alert addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil]];
+        [self presentViewController:alert animated:YES completion:nil];
+        return;
     }
     
-    AVAssetWriterInput *writerInput = [[AVAssetWriterInput alloc] initWithMediaType:AVMediaTypeAudio
-                                                                     outputSettings:self.outputSettings];
-    [writerInput setExpectsMediaDataInRealTime:NO];
-    [writer addInput:writerInput];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(audioSessionInterrupted:)
+                                                 name:AVAudioSessionInterruptionNotification
+                                               object:nil];
     
-    [writer startWriting];
-    [writer startSessionAtSourceTime:kCMTimeZero];
+    NSError *error = nil;
+    if ( ![[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback
+                                           withOptions:0
+                                                 error:&error] ) {
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Converting audio" message:[NSString stringWithFormat:@"Couldn't setup audio category: %@", error.localizedDescription] preferredStyle:UIAlertControllerStyleAlert];
+        [alert addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil]];
+        [self presentViewController:alert animated:YES completion:nil];
+        [[NSNotificationCenter defaultCenter] removeObserver:self];
+        return;
+    }
     
-    [reader startReading];
-    dispatch_queue_t mediaInputQueue = dispatch_queue_create("mediaInputQueue", NULL);
-    [writerInput requestMediaDataWhenReadyOnQueue:mediaInputQueue usingBlock:^{
-        
-        NSLog(@"Asset Writer ready : %d", writerInput.readyForMoreMediaData);
-        while (writerInput.readyForMoreMediaData) {
-            CMSampleBufferRef nextBuffer;
-            if ([reader status] == AVAssetReaderStatusReading && (nextBuffer = [readerOutput copyNextSampleBuffer])) {
-                if (nextBuffer) {
-                    NSLog(@"Adding buffer");
-                    [writerInput appendSampleBuffer:nextBuffer];
-                }
-            } else {
-                [writerInput markAsFinished];
-                
-                switch ([reader status]) {
-                    case AVAssetReaderStatusReading:
-                        break;
-                    case AVAssetReaderStatusFailed:
-                    case AVAssetReaderStatusCancelled:
-                    case AVAssetReaderStatusUnknown:
-                        [writer cancelWriting];
-                        break;
-                    case AVAssetReaderStatusCompleted:
-                        NSLog(@"Writer completed");
-                        [writer endSessionAtSourceTime:asset.duration];
-                        [writer finishWritingWithCompletionHandler:^{
-                            NSLog(@"Finished converting");
-                            
-                            if (outputFormat == kAudioFormatMPEG4AAC) {
-                                dispatch_async(dispatch_get_main_queue(), ^{
-                                    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Success!" message:@"Audio Converted" preferredStyle:UIAlertControllerStyleAlert];
-                                    [alert addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil]];
-                                    [self presentViewController:alert animated:YES completion:nil];
-                                });
-                                
-                            } else if (outputFormat == kAudioFormatLinearPCM) {
-                                
-                                dispatch_async(dispatch_get_main_queue(), ^{
-                                    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Success!" message:@"Audio Converted" preferredStyle:UIAlertControllerStyleAlert];
-                                    [alert addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil]];
-                                    [self presentViewController:alert animated:YES completion:nil];
-                                    
-                                    [self performSelector:@selector(showOutputWAVWaveform) withObject:nil afterDelay:1.0];
-                                    
-                                    [self performSelector:@selector(compareAudioFiles) withObject:nil afterDelay:1.0];
-                                });
-                            }
-                            
-                        }];
-                        break;
-                }
-                break;
-            }
-        }
-    }];
+    if ( ![[AVAudioSession sharedInstance] setActive:YES error:NULL] ) {
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Converting audio" message:[NSString stringWithFormat:@"Couldn't activate audio category: %@", error.localizedDescription] preferredStyle:UIAlertControllerStyleAlert];
+        [alert addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil]];
+        [self presentViewController:alert animated:YES completion:nil];
+        [[NSNotificationCenter defaultCenter] removeObserver:self];
+        return;
+    }
+    
+    self.audioConverter = [[TPAACAudioConverter alloc] initWithDelegate:self
+                                                                 source:self.wavFilePath
+                                                            destination:self.destinationAACFilePath];
+    
+    self.audioConverter.outputSettings = self.outputSettings;
+    
+    [self.audioConverter start];
 }
 
 #pragma mark- AAC->WAV
@@ -335,49 +268,10 @@ static void UpdateFormatInfo(CFURLRef inFileURL)
                     [self presentViewController:alert animated:YES completion:nil];
                     
                     [self performSelector:@selector(showOutputWAVWaveform) withObject:nil afterDelay:1.0];
-                    
-                    [self performSelector:@selector(compareAudioFiles) withObject:nil afterDelay:1.0];
                 });
             }
         }
     }
-}
-
-- (void)compareAudioFiles {
-    
-    /*__block NSMutableArray *inputFileAmplitudes;
-     __block NSMutableArray *outputFileAmplitudes;
-     __block NSMutableArray *amplitudesDifference;
-     
-     self.inputAudioFile = [EZAudioFile audioFileWithURL:[NSURL fileURLWithPath:self.wavFilePath]];
-     
-     [self.inputAudioFile getWaveformDataWithCompletionBlock:^(float **waveformData, int length) {
-     inputFileAmplitudes = [[NSMutableArray alloc] initWithCapacity:length];
-     
-     for (int i=0; i<length; i++) {
-     [inputFileAmplitudes addObject:@(waveformData[0][i])];
-     }
-     
-     self.outputAudioFile = [EZAudioFile audioFileWithURL:[NSURL fileURLWithPath:self.destinationWAVFilePath]];
-     [self.outputAudioFile getWaveformDataWithCompletionBlock:^(float **waveformData, int length) {
-     outputFileAmplitudes = [[NSMutableArray alloc] initWithCapacity:length];
-     
-     for (int i=0; i<length; i++) {
-     [outputFileAmplitudes addObject:@(waveformData[0][i])];
-     }
-     
-     amplitudesDifference = [[NSMutableArray alloc] initWithCapacity:length];
-     
-     for (int i=0; i<length; i++) {
-     [amplitudesDifference addObject:@([outputFileAmplitudes[i] floatValue] - [inputFileAmplitudes[i] floatValue])];
-     }
-     
-     NSLog(@"%@", amplitudesDifference);
-     
-     }];
-     
-     }];*/
-    
 }
 
 #pragma mark- FDWaveformView Plots
@@ -457,8 +351,10 @@ static void UpdateFormatInfo(CFURLRef inFileURL)
     
     UInt32 frameCount = numSamples;
     while (frameCount > 0) {
+        
         ExtAudioFileRead(fileRef, &frameCount, &convertedData);
         ExtAudioFileRead(fileRef2, &frameCount, &convertedData2);
+        
         
         if (frameCount > 0)  {
             AudioBuffer audioBuffer = convertedData.mBuffers[0];
@@ -467,67 +363,33 @@ static void UpdateFormatInfo(CFURLRef inFileURL)
             AudioBuffer audioBuffer2 = convertedData2.mBuffers[0];
             float *samples2 = (float *)audioBuffer2.mData;
             
-            vDSP_Length log2n = log2f(numSamples);
             
-            // Calculate the weights array. This is a one-off operation.
-            FFTSetup fftSetup = vDSP_create_fftsetup(log2n, FFT_RADIX2);
-            FFTSetup fftSetup2 = vDSP_create_fftsetup(log2n, FFT_RADIX2);
-            
-            // For an FFT, numSamples must be a power of 2, i.e. is always even
-            int nOver2 = numSamples/2;
-            
-            // Populate *window with the values for a hamming window function
-            float *window = (float *)malloc(sizeof(float) * numSamples);
-            vDSP_hamm_window(window, numSamples, 0);
-            // Window the samples
-            vDSP_vmul(samples, 1, window, 1, samples, 1, numSamples);
-            free(window);
-            
-            float *window2 = (float *)malloc(sizeof(float) * numSamples);
-            vDSP_hamm_window(window2, numSamples, 0);
-            // Window the samples
-            vDSP_vmul(samples2, 1, window2, 1, samples2, 1, numSamples);
-            free(window2);
-            
-            // Define complex buffer
-            COMPLEX_SPLIT A;
-            A.realp = (float *) malloc(nOver2*sizeof(float));
-            A.imagp = (float *) malloc(nOver2*sizeof(float));
-            
-            COMPLEX_SPLIT B;
-            B.realp = (float *) malloc(nOver2*sizeof(float));
-            B.imagp = (float *) malloc(nOver2*sizeof(float));
-            
-            // Pack samples:
-            // C(re) -> A[n], C(im) -> A[n+1]
-            vDSP_ctoz((COMPLEX*)samples, 2, &A, 1, numSamples/2);
-            vDSP_ctoz((COMPLEX*)samples2, 2, &B, 1, numSamples/2);
-            
-            //Perform a forward FFT using fftSetup and A
-            //Results are returned in A
-            vDSP_fft_zrip(fftSetup, &A, 1, log2n, FFT_FORWARD);
-            vDSP_fft_zrip(fftSetup2, &B, 1, log2n, FFT_FORWARD);
-            
-            //Convert COMPLEX_SPLIT A result to magnitudes
-            float amp[numSamples];
             float z[numSamples];
-            
-            float amp2[numSamples];
             float z2[numSamples];
-            
-            amp[0] = A.realp[0]/(numSamples*2);
-            amp2[0] = B.realp[0]/(numSamples*2);
-            for(int i=1; i<numSamples; i++) {
-                amp[i]=A.realp[i]*A.realp[i]+A.imagp[i]*A.imagp[i];
-                amp2[i]=B.realp[i]*B.realp[i]+B.imagp[i]*B.imagp[i];
-                
-                z[i] = sqrtf(amp[i]);
-                z2[i] = sqrtf(amp2[i]);
-            }
-            
             float sd = 0;
-            for (int i=0; i<numSamples; i++) {
-                sd = sd + powf(10*log10f(z[i])-10*log10f(z2[i]), 2)/numSamples;
+            
+            for (int k=1; k<=frameCount; k++) {
+                float ak = 0;
+                float bk = 0;
+                
+                float ak2 = 0;
+                float bk2 = 0;
+                
+                for (int n=1; n<=frameCount; n++) {
+                    float alfa = (-2*M_PI*n*k)/frameCount;
+                    
+                    ak = ak + samples[n-1] * cosf(alfa);
+                    bk = bk + samples[n-1] * sinf(alfa);
+                    
+                    ak2 = ak2 + samples2[n-1] * cosf(alfa);
+                    bk2 = bk2 + samples2[n-1] * sinf(alfa);
+                }
+                
+                z[k-1] = sqrtf(powf(ak, 2) + powf(bk, 2));
+                z2[k-1] = sqrtf(powf(ak2, 2) + powf(bk2, 2));
+                
+                sd = sd + powf(10*log10f(z[k-1])-10*log10f(z2[k-1]), 2)/frameCount;
+                
             }
             
             printf("%f\n", sd);
@@ -535,6 +397,35 @@ static void UpdateFormatInfo(CFURLRef inFileURL)
         } else {
             NSLog(@"Finished");
         }
+    }
+}
+
+#pragma mark- TPAACAudioConverter
+
+- (void)AACAudioConverter:(TPAACAudioConverter *)converter didFailWithError:(NSError *)error {
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Error" message:@"Converter fail" preferredStyle:UIAlertControllerStyleAlert];
+    [alert addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil]];
+    [self presentViewController:alert animated:YES completion:nil];
+}
+
+- (void)AACAudioConverterDidFinishConversion:(TPAACAudioConverter *)converter {
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Success!" message:@"Audio Converted" preferredStyle:UIAlertControllerStyleAlert];
+    [alert addAction:[UIAlertAction actionWithTitle:@"YAY!!!" style:UIAlertActionStyleDefault handler:nil]];
+    [self presentViewController:alert animated:YES completion:nil];
+}
+
+#pragma mark- Audio session interruption
+
+- (void)audioSessionInterrupted:(NSNotification*)notification {
+    NSNumber *interruptionType = notification.userInfo[AVAudioSessionInterruptionTypeKey];
+    
+    AVAudioSessionInterruptionType type = [interruptionType unsignedIntegerValue] == 1 ? AVAudioSessionInterruptionTypeBegan : AVAudioSessionInterruptionTypeEnded;
+    
+    if ( type == AVAudioSessionInterruptionTypeEnded) {
+        [[AVAudioSession sharedInstance] setActive:YES error:NULL];
+        if ( _audioConverter ) [_audioConverter resume];
+    } else if ( type == AVAudioSessionInterruptionTypeBegan ) {
+        if ( _audioConverter ) [_audioConverter interrupt];
     }
 }
 

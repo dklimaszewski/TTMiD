@@ -25,6 +25,7 @@
 		C635992F1C3D9ED3008C21AF /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C635992E1C3D9ED3008C21AF /* Accelerate.framework */; };
 		C661EF011C3C49B0008DA2EC /* lame.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C661EF001C3C49B0008DA2EC /* lame.framework */; };
 		C6DE7D8B1C3B04C5006BB821 /* MP3ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C6DE7D8A1C3B04C5006BB821 /* MP3ViewController.m */; };
+		C6F0A45B1C497733004C9812 /* TPAACAudioConverter.m in Sources */ = {isa = PBXBuildFile; fileRef = C6F0A45A1C497733004C9812 /* TPAACAudioConverter.m */; };
 		D2FF5F3FC7F42BADD0515117 /* libPods-Converter iOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C3818D84DD0EE137D983C1BE /* libPods-Converter iOS.a */; };
 /* End PBXBuildFile section */
 
@@ -62,6 +63,8 @@
 		C6DE7D861C3B04B4006BB821 /* lame.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lame.h; sourceTree = "<group>"; };
 		C6DE7D891C3B04C5006BB821 /* MP3ViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MP3ViewController.h; sourceTree = "<group>"; };
 		C6DE7D8A1C3B04C5006BB821 /* MP3ViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MP3ViewController.m; sourceTree = "<group>"; };
+		C6F0A4591C497733004C9812 /* TPAACAudioConverter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TPAACAudioConverter.h; sourceTree = "<group>"; };
+		C6F0A45A1C497733004C9812 /* TPAACAudioConverter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TPAACAudioConverter.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -87,6 +90,8 @@
 			children = (
 				1C7329831C0B275300A174B5 /* AACViewController.h */,
 				1C7329841C0B275300A174B5 /* AACViewController.m */,
+				C6F0A4591C497733004C9812 /* TPAACAudioConverter.h */,
+				C6F0A45A1C497733004C9812 /* TPAACAudioConverter.m */,
 			);
 			name = AAC;
 			sourceTree = "<group>";
@@ -340,6 +345,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1C75453D1C09CE5F0075BDAE /* CAXException.cpp in Sources */,
+				C6F0A45B1C497733004C9812 /* TPAACAudioConverter.m in Sources */,
 				1C7545231C09CD920075BDAE /* ViewController.m in Sources */,
 				1C7545341C09CE040075BDAE /* AudioConverterFileConvert.cpp in Sources */,
 				1C7329851C0B275300A174B5 /* AACViewController.m in Sources */,
@@ -464,6 +470,7 @@
 				LIBRARY_SEARCH_PATHS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = "michal.czwarnowski.Converter-iOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
@@ -482,6 +489,7 @@
 				LIBRARY_SEARCH_PATHS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = "michal.czwarnowski.Converter-iOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
 		};
