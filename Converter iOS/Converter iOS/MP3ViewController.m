@@ -8,7 +8,6 @@
 
 #import "MP3ViewController.h"
 #import "lame.h"
-#import <EZAudio.h>
 #import <FDWaveformView.h>
 
 #import <AVFoundation/AVFoundation.h>
@@ -49,7 +48,7 @@ static void UpdateFormatInfo(CFURLRef inFileURL)
     }
 }
 
-@interface MP3ViewController () <EZAudioFileDelegate, EZAudioFFTDelegate, EZOutputDataSource, EZOutputDelegate> {
+@interface MP3ViewController () {
     CFURLRef sourceURL;
     CFURLRef destinationURL;
 }
@@ -57,17 +56,10 @@ static void UpdateFormatInfo(CFURLRef inFileURL)
 @property (weak, nonatomic) IBOutlet FDWaveformView *inputAudioView;
 @property (weak, nonatomic) IBOutlet FDWaveformView *wavAudioView;
 
-@property (strong, nonatomic) EZAudioFile *inputAudioFile;
-@property (strong, nonatomic) EZAudioFile *outputAudioFile;
-
 @property (strong, nonatomic) NSString *mp3FilePath;
 @property (strong, nonatomic) NSString *wavFilePath;
 @property (strong, nonatomic) NSString *destinationMP3FilePath;
 @property (strong, nonatomic) NSString *destinationWAVFilePath;
-
-@property (assign, nonatomic) BOOL eof;
-@property (strong, nonatomic) EZOutput *output;
-@property (nonatomic, strong) EZAudioFFTRolling *fft;
 
 @end
 
@@ -76,8 +68,7 @@ static void UpdateFormatInfo(CFURLRef inFileURL)
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    self.wavFilePath = [[NSBundle mainBundle] pathForResource:@"test" ofType:@"wav"];
-    self.inputAudioFile = [EZAudioFile audioFileWithURL:[NSURL fileURLWithPath:self.wavFilePath]];
+    self.wavFilePath = [[NSBundle mainBundle] pathForResource:@"strings" ofType:@"wav"];
     
     [self showInputWAVWaveform];
 }
@@ -97,17 +88,20 @@ static void UpdateFormatInfo(CFURLRef inFileURL)
         int read, write;
         FILE *pcm = fopen([self.wavFilePath cStringUsingEncoding:1], "rb");
         FILE *mp3 = fopen([self.destinationMP3FilePath cStringUsingEncoding:1], "wb");
-        const int PCM_SIZE = 32768;
-        const int MP3_SIZE = 32768;
+        fseek(pcm, 4*1024, SEEK_CUR);
+        const int PCM_SIZE = 8192;
+        const int MP3_SIZE = 8192;
         short int pcm_buffer[PCM_SIZE*2];
         unsigned char mp3_buffer[MP3_SIZE];
         
         lame_t lame = lame_init();
-        lame_set_out_samplerate(lame, 44100);
-        lame_set_quality(lame, 2); // LAME_ENCODING_ENGINE_QUALITY
-        lame_set_brate(lame, 64);
+        lame_set_in_samplerate(lame, 22050);
+//        lame_set_out_samplerate(lame, 11025);
+//        lame_set_quality(lame, 1); // LAME_ENCODING_ENGINE_QUALITY
+        lame_set_brate(lame, 32);
+//        lame_set_num_channels(lame, 2);
         lame_set_VBR(lame, vbr_off);
-        lame_set_quality(lame, 1);
+//        lame_set_quality(lame, 1);
         lame_init_params(lame);
         
         do {
@@ -183,7 +177,7 @@ static void UpdateFormatInfo(CFURLRef inFileURL)
 
 - (void)convertAudio {
     @autoreleasepool {
-        OSStatus error = DoConvertFile(sourceURL, destinationURL, kAudioFormatLinearPCM, 44100, 0);
+        OSStatus error = DoConvertFile(sourceURL, destinationURL, kAudioFormatLinearPCM, 22050, 0);
         
         if (error) {
             // delete output file if it exists since an error was returned during the conversion process
@@ -246,7 +240,7 @@ static void UpdateFormatInfo(CFURLRef inFileURL)
     ExtAudioFileOpenURL(inputFileURL2, &fileRef2);
     
     AudioStreamBasicDescription audioFormat;
-    audioFormat.mSampleRate = 44100;
+    audioFormat.mSampleRate = 22050;
     audioFormat.mFormatID = kAudioFormatLinearPCM;
     audioFormat.mFormatFlags = kLinearPCMFormatFlagIsFloat;
     audioFormat.mBitsPerChannel = sizeof(Float32) * 8;

@@ -111,7 +111,7 @@ static void UpdateFormatInfo(CFURLRef inFileURL)
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    self.wavFilePath = [[NSBundle mainBundle] pathForResource:@"test" ofType:@"wav"];
+    self.wavFilePath = [[NSBundle mainBundle] pathForResource:@"dialogue1" ofType:@"wav"];
     
     [self showInputWAVWaveform];
 }
@@ -138,8 +138,8 @@ static void UpdateFormatInfo(CFURLRef inFileURL)
     //44100.0 -> 64000, 128000, 256000
     self.outputSettings = [NSMutableDictionary dictionaryWithDictionary:@{
                                                                           AVFormatIDKey : @(kAudioFormatMPEG4AAC),
-                                                                          AVSampleRateKey : @(44100.0),
-                                                                          AVEncoderBitRateKey : @(64000)
+                                                                          AVSampleRateKey : @(22050.0),
+                                                                          AVEncoderBitRateKey : @(128000)
                                                                           }];
     
     [self convert];
@@ -236,7 +236,7 @@ static void UpdateFormatInfo(CFURLRef inFileURL)
 
 - (void)convertAudio {
     @autoreleasepool {
-        OSStatus error = DoConvertFile(sourceURL, destinationURL, outputFormat, 44100, 0);
+        OSStatus error = DoConvertFile(sourceURL, destinationURL, outputFormat, 22050, 0);
         
         if (error) {
             // delete output file if it exists since an error was returned during the conversion process
@@ -308,7 +308,7 @@ static void UpdateFormatInfo(CFURLRef inFileURL)
     ExtAudioFileOpenURL(inputFileURL2, &fileRef2);
     
     AudioStreamBasicDescription audioFormat;
-    audioFormat.mSampleRate = 44100;
+    audioFormat.mSampleRate = 22050;
     audioFormat.mFormatID = kAudioFormatLinearPCM;
     audioFormat.mFormatFlags = kLinearPCMFormatFlagIsFloat;
     audioFormat.mBitsPerChannel = sizeof(Float32) * 8;
